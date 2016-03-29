@@ -1,0 +1,5 @@
+%h1 Instructors
+%p (Sorted by last name)
+%ul
+  - @instructors.each do |instructor|
+    %li= link_to instructor.name, instructor_path(id: instructor.id)

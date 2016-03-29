@@ -16,8 +16,9 @@ Rails.application.routes.draw do
     get 'export', on: :collection
   end
 
-  get '/instructor/:id' => 'instructor#show', as: :instructor
-  get '/instructor/:id/export' => 'instructor#export', as: :export_instructor
+  resources :instructor do
+    get 'export', on: :member
+  end
 
   # Example resource route with options:
   #   resources :products do
