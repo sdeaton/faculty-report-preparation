@@ -1,0 +1,30 @@
+%table.table
+  %tr
+    %th Term
+    %th Subject
+    %th Course
+    %th Section
+    %th Instructor
+    %th Enrollment
+    - (1..8).each do |num|
+      %th
+        = "Item #{num} mean"
+
+  - @evaluations.each do |evaluation|
+    %tr
+      %td
+        = evaluation.term
+      %td
+        = evaluation.subject
+      %td
+        = evaluation.course
+      %td
+        = evaluation.section
+      %td
+        = evaluation.instructor
+      %td
+        = evaluation.enrollment
+      - (1..8).each do |num|
+        %td
+          = evaluation.method("item#{num}_mean".to_sym).call
+
