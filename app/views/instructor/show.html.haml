@@ -1,0 +1,11 @@
+%p.text-right
+  = link_to "Download", export_instructor_path, class: "btn btn-primary"
+
+%h1
+  = @instructor.name
+
+%table.table
+  - @instructor.evaluations.each do |eval|
+    %tr
+      %td
+        = eval.to_json

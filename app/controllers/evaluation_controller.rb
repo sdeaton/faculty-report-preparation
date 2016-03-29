@@ -7,5 +7,7 @@ class EvaluationController < ApplicationController
   end
 
   def export
+    # export not implemented yet
+    redirect_to evaluation_index_path
   end
 end
