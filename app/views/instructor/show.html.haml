@@ -5,7 +5,22 @@
   = @instructor.name
 
 %table.table
-  - @instructor.evaluations.each do |eval|
+  %tr
+    %th Course
+    %th Semester
+    %th Enrollment
+    %th Mean Student Evaluation Score
+  - @instructor.courses_taught.each do |course|
     %tr
-      %td
-        = eval.to_json
+      %td= "#{course.subject} #{course.course}"
+      %td= course.term
+      %td= course.total_enrollment
+      %td= course.mean_eval_score
+
+  / blank table row
+  %tr
+    %td{colspan: 4}
+
+  %tr
+    %td{colspan: 2} TOTAL NUMBER OF STUDENTS
+    %td{colspan: 2}= @instructor.courses_taught.map(&:total_enrollment).inject(0) { |sum, n| sum+n }
