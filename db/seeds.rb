@@ -16,14 +16,14 @@ prng = Random.new
     section: (500 + i).to_s,
     instructor: 'Tiffani Williams',
     enrollment: prng.rand(20..50),
-    item1_mean: prng.rand(3.0..5.0),
-    item2_mean: prng.rand(3.0..5.0),
-    item3_mean: prng.rand(3.0..5.0),
-    item4_mean: prng.rand(3.0..5.0),
-    item5_mean: prng.rand(3.0..5.0),
-    item6_mean: prng.rand(3.0..5.0),
-    item7_mean: prng.rand(3.0..5.0),
-    item8_mean: prng.rand(3.0..5.0)
+    item1_mean: prng.rand(3.0..5.0).round(2),
+    item2_mean: prng.rand(3.0..5.0).round(2),
+    item3_mean: prng.rand(3.0..5.0).round(2),
+    item4_mean: prng.rand(3.0..5.0).round(2),
+    item5_mean: prng.rand(3.0..5.0).round(2),
+    item6_mean: prng.rand(3.0..5.0).round(2),
+    item7_mean: prng.rand(3.0..5.0).round(2),
+    item8_mean: prng.rand(3.0..5.0).round(2)
   )
 end
 
@@ -35,14 +35,14 @@ end
     section: (500 + i).to_s,
     instructor: 'Joseph Daniel Hurley',
     enrollment: prng.rand(20..50),
-    item1_mean: prng.rand(3.0..5.0),
-    item2_mean: prng.rand(3.0..5.0),
-    item3_mean: prng.rand(3.0..5.0),
-    item4_mean: prng.rand(3.0..5.0),
-    item5_mean: prng.rand(3.0..5.0),
-    item6_mean: prng.rand(3.0..5.0),
-    item7_mean: prng.rand(3.0..5.0),
-    item8_mean: prng.rand(3.0..5.0)
+    item1_mean: prng.rand(3.0..5.0).round(2),
+    item2_mean: prng.rand(3.0..5.0).round(2),
+    item3_mean: prng.rand(3.0..5.0).round(2),
+    item4_mean: prng.rand(3.0..5.0).round(2),
+    item5_mean: prng.rand(3.0..5.0).round(2),
+    item6_mean: prng.rand(3.0..5.0).round(2),
+    item7_mean: prng.rand(3.0..5.0).round(2),
+    item8_mean: prng.rand(3.0..5.0).round(2)
   )
 end
 
@@ -54,13 +54,13 @@ end
     section: (500 + i).to_s,
     instructor: 'Walter Daugherity',
     enrollment: prng.rand(20..50),
-    item1_mean: prng.rand(3.0..5.0),
-    item2_mean: prng.rand(3.0..5.0),
-    item3_mean: prng.rand(3.0..5.0),
-    item4_mean: prng.rand(3.0..5.0),
-    item5_mean: prng.rand(3.0..5.0),
-    item6_mean: prng.rand(3.0..5.0),
-    item7_mean: prng.rand(3.0..5.0),
-    item8_mean: prng.rand(3.0..5.0)
+    item1_mean: prng.rand(3.0..5.0).round(2),
+    item2_mean: prng.rand(3.0..5.0).round(2),
+    item3_mean: prng.rand(3.0..5.0).round(2),
+    item4_mean: prng.rand(3.0..5.0).round(2),
+    item5_mean: prng.rand(3.0..5.0).round(2),
+    item6_mean: prng.rand(3.0..5.0).round(2),
+    item7_mean: prng.rand(3.0..5.0).round(2),
+    item8_mean: prng.rand(3.0..5.0).round(2)
   )
 end
