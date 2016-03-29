@@ -11,14 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160328192306) do
+ActiveRecord::Schema.define(version: 20160329171547) do
 
   create_table "evaluations", force: true do |t|
     t.string   "term"
     t.string   "subject"
     t.string   "course"
     t.string   "section"
-    t.string   "instructor"
     t.integer  "enrollment"
     t.decimal  "item1_mean"
     t.decimal  "item2_mean"
@@ -28,6 +27,15 @@ ActiveRecord::Schema.define(version: 20160328192306) do
     t.decimal  "item6_mean"
     t.decimal  "item7_mean"
     t.decimal  "item8_mean"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "instructor_id"
+  end
+
+  add_index "evaluations", ["instructor_id"], name: "index_evaluations_on_instructor_id"
+
+  create_table "instructors", force: true do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
