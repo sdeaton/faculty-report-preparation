@@ -3,6 +3,7 @@
 
 %table.table.table-bordered
   %tr
+    %th Edit
     %th Term
     %th Subject
     %th Course
@@ -15,6 +16,8 @@
 
   - @evaluations.each do |evaluation|
     %tr
+      %td 
+        = link_to "Edit", edit_evaluation_path(evaluation)
       %td
         = evaluation.term
       %td
@@ -30,4 +33,3 @@
       - (1..8).each do |num|
         %td
           = evaluation.method("item#{num}_mean".to_sym).call
-
