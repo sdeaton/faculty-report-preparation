@@ -2,32 +2,34 @@
   = link_to "Download", export_evaluation_index_path, class: "btn btn-primary"
 
 %table.table.table-bordered
-  %tr
-    %th Term
-    %th Subject
-    %th Course
-    %th Section
-    %th Instructor
-    %th Enrollment
-    - (1..8).each do |num|
-      %th
-        = "Item #{num} mean"
-
-  - @evaluations.each do |evaluation|
+  %thead
     %tr
-      %td
-        = evaluation.term
-      %td
-        = evaluation.subject
-      %td
-        = evaluation.course
-      %td
-        = evaluation.section
-      %td
-        = link_to evaluation.instructor.name, instructor_path(id: evaluation.instructor.id)
-      %td
-        = evaluation.enrollment
+      %th Term
+      %th Subject
+      %th Course
+      %th Section
+      %th Instructor
+      %th Enrollment
       - (1..8).each do |num|
+        %th
+          = "Item #{num} mean"
+
+  %tbody
+    - @evaluations.each do |evaluation|
+      %tr
         %td
-          = evaluation.method("item#{num}_mean".to_sym).call
+          = evaluation.term
+        %td
+          = evaluation.subject
+        %td
+          = evaluation.course
+        %td
+          = evaluation.section
+        %td
+          = link_to evaluation.instructor.name, instructor_path(id: evaluation.instructor.id)
+        %td
+          = evaluation.enrollment
+        - (1..8).each do |num|
+          %td
+            = evaluation.method("item#{num}_mean".to_sym).call
 
