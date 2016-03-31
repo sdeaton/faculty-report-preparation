@@ -31,7 +31,7 @@ RSpec.describe EvaluationController, type: :controller do
   end
 
 
-  descibe "GET #edit" do
+  describe "GET #edit" do
     it "renders the edit template" do
       Evaluation.create
       get :edit, id: 1

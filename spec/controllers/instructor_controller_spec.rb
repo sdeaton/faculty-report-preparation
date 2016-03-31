@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe InstructorController, type: :controller do
   describe "GET #instructor" do
-
     it "responds successfully with an HTTP 200 status code" do
       get :index
       expect(response).to be_success
@@ -29,6 +28,13 @@ RSpec.describe InstructorController, type: :controller do
         get :index
         expect(assigns(:instructors)).to eq([daugherity,hurley,williams])
     end
+  end
 
+  describe "GET #export" do
+    it "redirects back to the index" do
+      inst = Instructor.create(name: 'Brent Walther')
+      get :export, { id: inst.id }
+      expect(response).to redirect_to(instructor_path(inst.id))
+    end
   end
 end
