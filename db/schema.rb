@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160329171547) do
+ActiveRecord::Schema.define(version: 20160331222137) do
 
   create_table "evaluations", force: true do |t|
     t.string   "term"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 20160329171547) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "instructor_id"
+    t.boolean  "is_test_data"
   end
 
   add_index "evaluations", ["instructor_id"], name: "index_evaluations_on_instructor_id"
