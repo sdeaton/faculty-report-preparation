@@ -14,4 +14,9 @@
         = link_to "Evaluation Data", evaluation_index_path
       %li{role: "presentation"}
         = link_to "Faculty Member Historical Data", instructor_index_path
+
+    - if notice.present?
+      %div.alert.alert-info= notice
+    - if alert.present?
+      %div.alert.alert-warning= alert
     = yield
