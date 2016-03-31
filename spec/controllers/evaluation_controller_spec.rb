@@ -23,10 +23,62 @@ RSpec.describe EvaluationController, type: :controller do
     end
   end
 
-  describe "GET export" do
+  describe "GET #export" do
     it "redirects back to the index" do
       get :export
       expect(response).to redirect_to(evaluation_index_path)
     end
   end
+
+
+  descibe "GET #edit" do
+    it "renders the edit template" do
+      Evaluation.create
+      get :edit, id: 1
+      expect(response).to render_template("evaluation/edit")
+    end
+  end
+
+
+  describe "PUT #evaluation" do
+
+    before :each do
+      instructor = Instructor.create(name: 'xyz')
+      @eval1=Evaluation.create(
+        term: '2015C',
+        subject: 'CSCE',
+        course: '110',
+        section: '500' ,
+        instructor: instructor ,
+        enrollment: '47',
+      )
+      @eval2=Evaluation.create(
+        term: '2015C',
+        subject: 'CSCE',
+        course: '111',
+        section: '501' ,
+        instructor: instructor ,
+        enrollment: '22',
+      )
+    end
+
+    it "updates the enrollment and redirects to evaluation page  " do
+      put :update, id: @eval1, :evaluation=>{:enrollment=>"44"}
+      @eval1.reload
+      @eval1.enrollment.should eq (44)
+      expect(response).to redirect_to('/evaluation')
+    end
+
+
+    it "edits the correct row and redirects to evaluation page" do
+      put :update, id: @eval1, :evaluation=>{:enrollment=>"54"}
+      @eval1.reload
+      @eval2.reload
+      @eval1.enrollment.should eq (54)
+      @eval2.enrollment.should eq (22)
+      expect(response).to redirect_to('/evaluation')
+    end
+
+  end
+
 end
