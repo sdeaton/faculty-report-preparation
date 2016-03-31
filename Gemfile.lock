@@ -113,6 +113,7 @@ GEM
     multi_test (0.1.2)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
+    pg (0.18.4)
     rack (1.5.5)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -209,6 +210,7 @@ DEPENDENCIES
   haml-rails (~> 0.9)
   jbuilder (~> 2.0)
   jquery-rails
+  pg
   rails (= 4.1.10)
   rspec
   rspec-rails (~> 3.0)
