@@ -11,5 +11,5 @@ require 'rails_helper'
 #   end
 # end
 RSpec.describe InstructorHelper, type: :helper do
-  pending "add some examples to (or delete) #{__FILE__}"
+  pending "No InstructorHelper code to test yet."
 end

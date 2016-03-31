@@ -67,6 +67,8 @@ GEM
       mime-types (>= 1.16, < 4)
       nokogiri (~> 1.5)
       railties (>= 3, < 5)
+    cucumber-rails-training-wheels (1.0.0)
+      cucumber-rails (>= 1.1.1)
     cucumber-wire (0.0.1)
     database_cleaner (1.5.1)
     diff-lcs (1.2.5)
@@ -201,6 +203,7 @@ DEPENDENCIES
   coffee-rails (~> 4.0.0)
   cucumber
   cucumber-rails
+  cucumber-rails-training-wheels
   database_cleaner
   factory_girl_rails
   haml-rails (~> 0.9)
