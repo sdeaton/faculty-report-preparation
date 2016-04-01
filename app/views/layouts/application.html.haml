@@ -14,6 +14,11 @@
         = link_to "Evaluation Data", evaluation_index_path
       %li{role: "presentation"}
         = link_to "Faculty Member Historical Data", instructor_index_path
+      %li{role: "presentation"}
+        - if user_signed_in?
+          = link_to "Sign out", destroy_user_session_path, method: :delete
+        - else
+          = link_to "Sign in", new_user_session_path
 
     - if notice.present?
       %div.alert.alert-info= notice

@@ -27,6 +27,9 @@ gem 'spring',        group: :development
 # Use devise for user authentication
 gem 'devise'
 
+# User rubyXL gem for reading and writing xlsx files
+gem 'rubyXL'
+
 group :development, :test do
   # Use sqlite3 as the database for Active Record
   gem 'sqlite3'

@@ -1,9 +1,11 @@
 :css
   #title  {padding:5% 0;}
   #buttons {padding: 6% 0;}
-#title  
+#title
   %h1.text-center PICA Utilities
 #buttons
+  %p.text-center
+    = link_to "Import evaluation data from PICA", import_evaluation_index_path, class: "btn btn-primary"
   %p.text-center
     = link_to "Evaluation Data", evaluation_index_path, class: "btn btn-primary"
   %p.text-center
