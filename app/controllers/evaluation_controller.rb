@@ -7,6 +7,30 @@ class EvaluationController < ApplicationController
     params.require(:id)
   end
 
+  def new
+    @evaluation = Evaluation.new
+    # pluck call must remain :name, :id to have the correct ordering for the select box helper
+    @instructors = Instructor.select_menu_options
+    render layout: "layouts/centered_form"
+  end
+
+  def create
+    key_attrs, other_attrs = split_attributes(evaluation_params)
+
+    @evaluation = Evaluation.where(key_attrs).first_or_initialize
+    @evaluation.assign_attributes(other_attrs)
+    @evaluation.save
+
+    if @evaluation.errors.empty?
+      flash[:notice] = "Evaluation created."
+      redirect_to evaluation_index_path
+    else
+      flash[:errors] = @evaluation.errors
+      @instructors = Instructor.select_menu_options
+      render 'new', layout: "layouts/centered_form"
+    end
+  end
+
   def index
     @evaluation_groups = Evaluation.default_sorted_groups
     @terms = Evaluation.pluck(:term).uniq
@@ -27,9 +51,14 @@ class EvaluationController < ApplicationController
 
   def update
     @evaluation = Evaluation.find(evaluation_id)
-    @evaluation.update_attributes!(eval_params)
-    flash[:notice] = "updated"
-    redirect_to evaluation_index_path
+    @evaluation.update(eval_params)
+    if @evaluation.errors.empty?
+      flash[:notice] = "Evaluation updated."
+      redirect_to evaluation_index_path
+    else
+      flash[:errors] = @evaluation.errors
+      render 'edit'
+    end
   end
 
   # TODO: clean this up a little but. It should be easy to follow, but it's a little long.
@@ -51,12 +80,24 @@ class EvaluationController < ApplicationController
   private
   def split_attributes(all_attrs)
       # key attributes are ones for which we should have one unique record for a set of them
-      key_attributes = all_attrs.select { |k,v| [:term, :subject, :course, :section].include?(k) }
+      key_attributes = all_attrs.select { |k,v| [:term, :subject, :course, :section].include?(k.to_sym) }
 
       # other atttributes are ones that should either be assigned or updated
-      other_attributes = all_attrs.select { |k,v| ![:term, :subject, :course, :section].include?(k) }
+      other_attributes = all_attrs.select { |k,v| ![:term, :subject, :course, :section].include?(k.to_sym) }
       other_attributes[:instructor] = Instructor.where(name: other_attributes[:instructor]).first_or_create
 
       [ key_attributes, other_attributes ]
+  end
+
+  def evaluation_params
+    if params[:evaluation][:instructor_id] == "0"
+      instructor = Instructor.where(name: params[:evaluation][:instructor]).first_or_create
+      params[:evaluation][:instructor_id] = instructor.id
+    end
+    params[:evaluation].delete(:instructor)
+
+    params.require(:evaluation).permit(:term, :subject, :course, :section, :instructor_id,
+      :enrollment, :item1_mean, :item2_mean, :item3_mean, :item4_mean, :item5_mean,
+      :item6_mean, :item7_mean, :item8_mean)
   end
 end

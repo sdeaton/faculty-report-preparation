@@ -24,5 +24,8 @@
       %div.alert.alert-info= notice
     - if alert.present?
       %div.alert.alert-warning= alert
+    - if flash[:errors]
+      - flash[:errors].full_messages.each do |error|
+        %div.alert.alert-danger= error
 
     = content_for?(:content) ? yield(:content) : yield

@@ -1,5 +1,23 @@
 class Evaluation < ActiveRecord::Base
   belongs_to :instructor
+  validates_associated :instructor
+
+  validates :term, presence: true, format: { with: /[12][0-9]{3}[A-Z]/,
+    message: "must be in the format: xxxxY where xxxx is year and Y is semester letter. Example: 2015C" }
+  validates :subject, presence: true, format: { with: /[A-Z]{4}/,
+    message: "must be four capital letters." }
+  validates :course, presence: true, numericality: { only_integer: true }
+  validates :section, presence: true, numericality: { only_integer: true }
+  validates :instructor, presence: true
+  validates :enrollment, presence: true, numericality: { only_integer: true }
+  validates :item1_mean, presence: true, numericality: true
+  validates :item2_mean, presence: true, numericality: true
+  validates :item3_mean, presence: true, numericality: true
+  validates :item4_mean, presence: true, numericality: true
+  validates :item5_mean, presence: true, numericality: true
+  validates :item6_mean, presence: true, numericality: true
+  validates :item7_mean, presence: true, numericality: true
+  validates :item8_mean, presence: true, numericality: true
 
   def self.create_if_needed_and_update(key_attrs, other_attrs)
     evaluation = where(key_attrs).first_or_initialize

@@ -1,0 +1,76 @@
+%h1 Evaluation data:
+
+= form_for :evaluation, url: evaluation_index_path, method: :post, html: { class: "form-horizontal" } do |f|
+  .form-group
+    %label{for: "evaluation_term", class: "col-sm-2 control-label"} Term
+    .col-sm-4
+      = f.text_field :term, class: "form-control", placeholder: "e.g. 2015C", required: true
+
+    %label{for: "evaluation_subject", class: "col-sm-2 control-label"} Subject
+    .col-sm-4
+      = f.text_field :subject, class: "form-control", placeholder: "e.g. CSCE", required: true
+
+  .form-group
+    %label{for: "evaluation_course", class: "col-sm-2 control-label"} Course
+    .col-sm-4
+      = f.text_field :course, class: "form-control", placeholder: "e.g. 121", required: true
+
+    %label{for: "evaluation_section", class: "col-sm-2 control-label"} Section
+    .col-sm-4
+      = f.text_field :section, class: "form-control", placeholder: "e.g. 501", required: true
+
+  .form-group
+    %label{for: "evaluation_section", class: "col-sm-2 control-label"} Enrollment
+    .col-sm-4
+      = f.text_field :enrollment, class: "form-control", placeholder: "e.g. 50", required: true
+
+    #instructor_select_wrapper
+      %label{for: "evaluation_instructor_id", class: "col-sm-2 control-label"} Instructor
+      .col-sm-4
+        = f.select "instructor_id", @instructors, {}, class: "form-control"
+    #instructor_name_wrapper{style: "display: none"}
+      %label{for: "evaluation_instructor", class: "col-sm-2 control-label"} Name
+      .col-sm-4
+        = f.text_field :instructor, class: "form-control", placeholder: "e.g. Walter Daugherity"
+        %p.help-block
+          %a#cancel_manual_instructor_entry{href: "#"} Cancel
+
+  .form-group
+    %label{for: "evaluation_item1_mean", class: "col-sm-2 control-label"} Item 1 Mean
+    .col-sm-4
+      = f.text_field :item1_mean, class: "form-control", placeholder: "e.g. 4.32", required: true
+
+    %label{for: "evaluation_item2_mean", class: "col-sm-2 control-label"} Item 2 Mean
+    .col-sm-4
+      = f.text_field :item2_mean, class: "form-control", placeholder: "e.g. 4.32", required: true
+
+  .form-group
+    %label{for: "evaluation_item3_mean", class: "col-sm-2 control-label"} Item 3 Mean
+    .col-sm-4
+      = f.text_field :item3_mean, class: "form-control", placeholder: "e.g. 4.32", required: true
+
+    %label{for: "evaluation_item4_mean", class: "col-sm-2 control-label"} Item 4 Mean
+    .col-sm-4
+      = f.text_field :item4_mean, class: "form-control", placeholder: "e.g. 4.32", required: true
+
+  .form-group
+    %label{for: "evaluation_item5_mean", class: "col-sm-2 control-label"} Item 5 Mean
+    .col-sm-4
+      = f.text_field :item5_mean, class: "form-control", placeholder: "e.g. 4.32", required: true
+
+    %label{for: "evaluation_item6_mean", class: "col-sm-2 control-label"} Item 6 Mean
+    .col-sm-4
+      = f.text_field :item6_mean, class: "form-control", placeholder: "e.g. 4.32", required: true
+
+  .form-group
+    %label{for: "evaluation_item7_mean", class: "col-sm-2 control-label"} Item 7 Mean
+    .col-sm-4
+      = f.text_field :item7_mean, class: "form-control", placeholder: "e.g. 4.32", required: true
+
+    %label{for: "evaluation_item8_mean", class: "col-sm-2 control-label"} Item 8 Mean
+    .col-sm-4
+      = f.text_field :item8_mean, class: "form-control", placeholder: "e.g. 4.32", required: true
+
+  .form-group
+    .col-sm-10.col-sm-offset-2
+      = f.submit "Add Evaluation", class: "btn btn-primary"
