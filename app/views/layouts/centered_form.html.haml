@@ -1,6 +1,7 @@
 - content_for :content do
-  .row
-    .col-md-6.col-md-offset-3
-      = yield
+  .outer
+    .middle
+      .inner.well
+        = yield
 
 = render template: "layouts/application"

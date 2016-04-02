@@ -1,5 +1,7 @@
 class EvaluationController < ApplicationController
 
+  before_action :authenticate_user!
+
   def new
     @evaluation = Evaluation.new
     # pluck call must remain :name, :id to have the correct ordering for the select box helper

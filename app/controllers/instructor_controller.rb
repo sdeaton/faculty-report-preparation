@@ -1,4 +1,7 @@
 class InstructorController < ApplicationController
+
+  before_action :authenticate_user!
+
   def index
     # return the instructors in sorted order by last name
     @instructors = Instructor.all.sort { |a, b| a.name.split(" ").last <=> b.name.split(" ").last }
