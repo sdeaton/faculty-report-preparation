@@ -8,7 +8,7 @@ class EvaluationController < ApplicationController
   end
 
   def index
-    @evaluations = Evaluation.all
+    @evaluation_groups = Evaluation.default_sorted_groups
   end
 
   def import
