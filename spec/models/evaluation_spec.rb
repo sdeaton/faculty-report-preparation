@@ -10,4 +10,35 @@ RSpec.describe Evaluation, type: :model do
 
     expect(eval.instructor).to eq(instructor)
   end
+
+  describe "#create_if_needed_and_update" do
+
+    let (:key_attrs) { {:term=>"2015C", :subject=>"CSCE", :course=>110, :section=>501} }
+    let (:other_attrs) { {:instructor=> instructor , :enrollment=>24, :item1_mean=>4.46,
+      :item2_mean=>4.46, :item3_mean=>4.46, :item4_mean=>4.08, :item5_mean=>4.46,
+      :item6_mean=>4, :item7_mean=>3.85, :item8_mean=>4.38} }
+
+    it "returns true if the record didn't exist" do
+      expect(Evaluation.create_if_needed_and_update(key_attrs, other_attrs)).to be true
+    end
+
+    it "returns false if the record already existed" do
+      Evaluation.create(key_attrs)
+      expect(Evaluation.create_if_needed_and_update(key_attrs, other_attrs)).to be false
+    end
+
+    it "creates a new record if one does not already exist" do
+      expect(Evaluation.all.count).to eq(0)
+      Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
+      expect(Evaluation.all.count).to eq(1)
+    end
+
+    it "doesn't create a new record if one already exists" do
+      Evaluation.create(key_attrs)
+      expect(Evaluation.all.count).to eq(1)
+
+      Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
+      expect(Evaluation.all.count).to eq(1)
+    end
+  end
 end
