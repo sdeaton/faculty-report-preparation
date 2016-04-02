@@ -38,13 +38,7 @@ class EvaluationController < ApplicationController
     creation_results = importer.evaluation_hashes.map do |eval_attrs|
       key_attrs, other_attrs = split_attributes(eval_attrs)
 
-      evaluation = Evaluation.where(key_attrs).first_or_initialize
-      is_new_record = evaluation.new_record?
-      evaluation.save
-
-      evaluation.update(other_attrs)
-
-      is_new_record
+      Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
     end
 
     num_new_records = creation_results.count { |result| result == true }
