@@ -1,11 +1,4 @@
 class EvaluationController < ApplicationController
-  def eval_params
-    params.require(:evaluation).permit(:enrollment)
-  end
-
-  def evaluation_id
-    params.require(:id)
-  end
 
   def new
     @evaluation = Evaluation.new
@@ -99,5 +92,13 @@ class EvaluationController < ApplicationController
     params.require(:evaluation).permit(:term, :subject, :course, :section, :instructor_id,
       :enrollment, :item1_mean, :item2_mean, :item3_mean, :item4_mean, :item5_mean,
       :item6_mean, :item7_mean, :item8_mean)
+  end
+
+  def eval_params
+    params.require(:evaluation).permit(:enrollment)
+  end
+
+  def evaluation_id
+    params.require(:id)
   end
 end
