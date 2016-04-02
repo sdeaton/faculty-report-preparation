@@ -9,6 +9,7 @@ class EvaluationController < ApplicationController
 
   def index
     @evaluation_groups = Evaluation.default_sorted_groups
+    @terms = Evaluation.pluck(:term).uniq
   end
 
   def import

@@ -1,5 +1,9 @@
 %p.text-right
-  = link_to "Download", export_evaluation_index_path, class: "btn btn-primary"
+  = link_to "Download", export_evaluation_index_path, class: "btn btn-primary pull-right"
+  = form_tag evaluation_index_path, method: :get, class: "form-inline" do
+    .form-group
+      %label{ for: "term" } Select Term:
+      = select "term", "selection", @terms, {}, class: "form-control"
 
 %table.table.table-condensed
   %thead
