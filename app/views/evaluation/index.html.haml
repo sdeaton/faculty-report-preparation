@@ -14,6 +14,7 @@
       - (1..8).each do |num|
         %th
           = "Item #{num} mean"
+      %th Mean Student Eval Score
 
   %tbody
     - @evaluation_groups.each do |group|
@@ -36,11 +37,12 @@
           - (1..8).each do |num|
             %td
               = evaluation.method("item#{num}_mean".to_sym).call
+          %td
       %tr
         %td{colspan: 6}
         %td= compute_total_enrollment(group)
         - (1..8).each do |x|
-          %td.warning
-            = compute_weighted_average_for_item(x, group).round(2)
+          %td.warning= compute_weighted_average_for_item(x, group).round(2)
+        %td.success= compute_mean_student_eval_score(group).round(2)
       %tr
-        %td{colspan: 15}
+        %td{colspan: 16}
