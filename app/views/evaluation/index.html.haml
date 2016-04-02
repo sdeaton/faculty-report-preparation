@@ -1,7 +1,7 @@
 %p.text-right
   = link_to "Download", export_evaluation_index_path, class: "btn btn-primary"
 
-%table.table.table-bordered.table-condensed
+%table.table.table-condensed
   %thead
     %tr
       %th Edit
@@ -37,4 +37,10 @@
             %td
               = evaluation.method("item#{num}_mean".to_sym).call
       %tr
-        %td
+        %td{colspan: 6}
+        %td= compute_total_enrollment(group)
+        - (1..8).each do |x|
+          %td.warning
+            = compute_weighted_average_for_item(x, group).round(2)
+      %tr
+        %td{colspan: 15}
