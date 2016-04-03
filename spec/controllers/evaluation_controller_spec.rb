@@ -1,8 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe EvaluationController, type: :controller do
-  describe "GET #index" do
 
+  it "redirects the user to the login page if they are unauthenticated" do
+    sign_out @user
+    get :index
+    expect(response).to redirect_to(new_user_session_path)
+  end
+
+  before(:each) do
+    @user = FactoryGirl.create(:user)
+    sign_in @user
+  end
+
+  describe "GET #index" do
     it "responds successfully with an HTTP 200 status code" do
       get :index
       expect(response).to be_success
@@ -17,9 +28,9 @@ RSpec.describe EvaluationController, type: :controller do
 
 
     it "assigns @evaluations" do
-        eval = Evaluation.create
+        eval = FactoryGirl.create(:evaluation)
         get :index
-        expect(assigns(:evaluations)).to eq([eval])
+        expect(assigns(:evaluation_groups)).to eq([[eval]])
     end
   end
 
@@ -33,7 +44,7 @@ RSpec.describe EvaluationController, type: :controller do
 
   describe "GET #edit" do
     it "renders the edit template" do
-      Evaluation.create
+      FactoryGirl.create(:evaluation)
       get :edit, id: 1
       expect(response).to render_template("evaluation/edit")
     end
@@ -43,23 +54,18 @@ RSpec.describe EvaluationController, type: :controller do
   describe "PUT #evaluation" do
 
     before :each do
-      instructor = Instructor.create(name: 'xyz')
-      @eval1=Evaluation.create(
-        term: '2015C',
-        subject: 'CSCE',
-        course: '110',
-        section: '500' ,
-        instructor: instructor ,
-        enrollment: '47',
-      )
-      @eval2=Evaluation.create(
-        term: '2015C',
-        subject: 'CSCE',
-        course: '111',
-        section: '501' ,
-        instructor: instructor ,
-        enrollment: '22',
-      )
+      # instructor = Instructor.create(name: 'xyz')
+      @eval1 = FactoryGirl.create(:evaluation, enrollment: 47)
+
+      @eval2 = FactoryGirl.create(:evaluation, enrollment: 22)
+      # @eval2=Evaluation.create(
+      #   term: '2015C',
+      #   subject: 'CSCE',
+      #   course: '111',
+      #   section: '501' ,
+      #   instructor: instructor ,
+      #   enrollment: '22',
+      # )
     end
 
     it "updates the enrollment and redirects to evaluation page  " do
