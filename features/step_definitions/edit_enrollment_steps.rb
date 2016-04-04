@@ -34,7 +34,7 @@ end
 When(/^User is on edit page for user (.+)$/) do |n|
 	visit '/evaluation/'+n+'/edit'
 end
-When(/^User clicks on Update Enrollment button on edit page$/) do 
+When(/^User clicks on Update Enrollment button on edit page$/) do
   click_on("Update Enrollment Info")
 end
 

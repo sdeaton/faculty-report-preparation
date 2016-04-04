@@ -13,6 +13,6 @@ Feature: Edit enrollment numbers for classes
 
   Scenario: User gets redirected to evaluation index page after updating
     Given There exists 5 evaluation record in the database for instructor xyz
-    When User is on edit page for user 1 
+    When User is on edit page for user 1
     And User clicks on Update Enrollment button on edit page
     Then User should be redirected to evaluation index page

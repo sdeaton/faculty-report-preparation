@@ -1,5 +1,5 @@
 Feature: Be able to navigate to other pages from home page
-  
+
   Scenario: User first loads webapp
     Given User is on the home page
     Then User should see a Faculty Member Historical Data button
@@ -15,4 +15,4 @@ Feature: Be able to navigate to other pages from home page
     Given User is on the home page
     When User clicks on the Faculty Member Historical Data button
     Then User should see the faculty member historical data page
-  
+
