@@ -1,24 +1,26 @@
-Given(/^There exists (\d+) evaluation records in the database for instructor (.+)$/) do |n, name|
+Given(/^There exists (\d+) groups? of (\d+) evaluation records in the database for instructor (.+)$/) do |n_groups, n_records, name|
   prng = Random.new
 
   instructor = Instructor.create(name: name)
-  (1..n.to_i).each do |i|
-    Evaluation.create(
-      term: '2015C',
-      subject: 'CSCE',
-      course: '110',
-      section: (500 + i).to_s,
-      instructor: instructor,
-      enrollment: prng.rand(20..50),
-      item1_mean: prng.rand(3.0..5.0).round(2),
-      item2_mean: prng.rand(3.0..5.0).round(2),
-      item3_mean: prng.rand(3.0..5.0).round(2),
-      item4_mean: prng.rand(3.0..5.0).round(2),
-      item5_mean: prng.rand(3.0..5.0).round(2),
-      item6_mean: prng.rand(3.0..5.0).round(2),
-      item7_mean: prng.rand(3.0..5.0).round(2),
-      item8_mean: prng.rand(3.0..5.0).round(2)
-    )
+  (1..n_groups.to_i).each do |g|
+    (1..n_records.to_i).each do |i|
+      Evaluation.create(
+        term: '2015C',
+        subject: 'CSCE',
+        course: (110 + g).to_s,
+        section: (500 + i).to_s,
+        instructor: instructor,
+        enrollment: prng.rand(20..50),
+        item1_mean: prng.rand(3.0..5.0).round(2),
+        item2_mean: prng.rand(3.0..5.0).round(2),
+        item3_mean: prng.rand(3.0..5.0).round(2),
+        item4_mean: prng.rand(3.0..5.0).round(2),
+        item5_mean: prng.rand(3.0..5.0).round(2),
+        item6_mean: prng.rand(3.0..5.0).round(2),
+        item7_mean: prng.rand(3.0..5.0).round(2),
+        item8_mean: prng.rand(3.0..5.0).round(2)
+      )
+    end
   end
 end
 
