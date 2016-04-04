@@ -13,6 +13,27 @@ RSpec.describe EvaluationController, type: :controller do
     sign_in @user
   end
 
+  describe "GET #new" do
+    it "responds successfully with an HTTP 200 status code" do
+      get :new
+      expect(response).to be_success
+      expect(response).to have_http_status(200)
+    end
+
+    it "assigns @evaluation" do
+      get :new
+      expect(assigns(:evaluation)).to_not be(nil)
+      expect(assigns(:evaluation).instance_of?(Evaluation)).to be(true)
+    end
+
+    it "assigns @instructor" do
+      FactoryGirl.create(:instructor)
+      FactoryGirl.create(:instructor)
+      get :new
+      expect(assigns(:instructors).count).to be(3) # number of existing instructors + "New Instructor"
+    end
+  end
+
   describe "GET #index" do
     it "responds successfully with an HTTP 200 status code" do
       get :index
@@ -28,9 +49,27 @@ RSpec.describe EvaluationController, type: :controller do
 
 
     it "assigns @evaluations" do
-        eval = FactoryGirl.create(:evaluation)
+        eval1 = FactoryGirl.create(:evaluation, course: 110)
+        eval2 = FactoryGirl.create(:evaluation, course: 111)
         get :index
-        expect(assigns(:evaluation_groups)).to eq([[eval]])
+        expect(assigns(:evaluation_groups)).to eq([[eval1], [eval2]])
+    end
+
+    it "assigns @terms" do
+      eval1 = FactoryGirl.create(:evaluation, term: '2015C')
+      eval2 = FactoryGirl.create(:evaluation, term: '2015B')
+      eval3 = FactoryGirl.create(:evaluation, term: '2015B')
+      get :index
+      expect(assigns(:terms)).to include(eval1.term)
+      expect(assigns(:terms)).to include(eval2.term)
+      expect(assigns(:terms).length).to be(2) # should only include unique terms!
+    end
+  end
+
+  describe "GET #import" do
+    it "renders the pretty centered form template" do
+      get :import
+      expect(response).to render_template 'layouts/centered_form'
     end
   end
 
@@ -51,21 +90,11 @@ RSpec.describe EvaluationController, type: :controller do
   end
 
 
-  describe "PUT #evaluation" do
+  describe "PUT #update" do
 
     before :each do
-      # instructor = Instructor.create(name: 'xyz')
       @eval1 = FactoryGirl.create(:evaluation, enrollment: 47)
-
       @eval2 = FactoryGirl.create(:evaluation, enrollment: 22)
-      # @eval2=Evaluation.create(
-      #   term: '2015C',
-      #   subject: 'CSCE',
-      #   course: '111',
-      #   section: '501' ,
-      #   instructor: instructor ,
-      #   enrollment: '22',
-      # )
     end
 
     it "updates the enrollment and redirects to evaluation page  " do
@@ -83,6 +112,13 @@ RSpec.describe EvaluationController, type: :controller do
       expect(@eval1.enrollment).to eq (54)
       expect(@eval2.enrollment).to eq (22)
       expect(response).to redirect_to('/evaluation')
+    end
+
+    it "rejects and redirects back to edit for bad updates" do
+      put :update, id: @eval1, evaluation: { enrollment: "45.5" }
+      @eval1.reload
+      expect(@eval1.enrollment).to eq(47)
+      expect(response).to render_template("evaluation/edit")
     end
 
   end
