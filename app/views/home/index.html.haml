@@ -6,7 +6,9 @@
         %p
           = link_to "Import evaluation data from PICA", import_evaluation_index_path, class: "btn btn-primary"
         %p
-          = link_to "Evaluation Data", evaluation_index_path, class: "btn btn-primary"
+          = link_to "Add Paper Evaluation", new_evaluation_path, class: "btn btn-primary"
+        %p
+          = link_to "View Evaluation Data", evaluation_index_path, class: "btn btn-primary"
         %p
           = link_to "Faculty Member Historical Data", instructor_index_path, class: "btn btn-primary"
       - else
