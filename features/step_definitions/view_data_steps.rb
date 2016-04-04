@@ -36,10 +36,6 @@ When(/^Clicks on the name of instructor (.+)$/) do |name|
   click_link(name, match: :first)
 end
 
-Then(/^User should see a table of (\d+) data rows$/) do |n|
-  expect(page).to have_css("tbody tr", count: n.to_i)
-end
-
 Then(/^User should see courses page for (.+)$/) do |name|
   expect(page).to have_content(name)
   expect(page).to have_css("tbody tr")

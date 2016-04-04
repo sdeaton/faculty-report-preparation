@@ -34,6 +34,34 @@ RSpec.describe EvaluationController, type: :controller do
     end
   end
 
+  describe "POST #create" do
+    it "redirects to the evaluation index page upon evaluation creation" do
+      eval = FactoryGirl.build(:evaluation)
+      post :create, evaluation: eval.as_json
+      expect(response).to redirect_to(evaluation_index_path)
+    end
+
+    it "creates a new evaluation if parameters are valid" do
+      eval = FactoryGirl.build(:evaluation)
+      expect(Evaluation.count).to eq(0)
+      post :create, evaluation: eval.as_json
+      expect(Evaluation.count).to eq(1)
+    end
+
+    it "renders the new page again if params are invalid" do
+      eval = FactoryGirl.build(:evaluation, term: "summer")
+      post :create, evaluation: eval.as_json
+      expect(response).to render_template(:new)
+    end
+
+    it "does not create an evaluation if parameters are invalid" do
+      eval = FactoryGirl.build(:evaluation, term: "summer")
+      expect(Evaluation.count).to eq(0)
+      post :create, evaluation: eval.as_json
+      expect(Evaluation.count).to eq(0)
+    end
+  end
+
   describe "GET #index" do
     it "responds successfully with an HTTP 200 status code" do
       get :index
