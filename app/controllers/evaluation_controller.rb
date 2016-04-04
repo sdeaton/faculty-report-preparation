@@ -79,7 +79,12 @@ class EvaluationController < ApplicationController
 
       # other atttributes are ones that should either be assigned or updated
       other_attributes = all_attrs.select { |k,v| ![:term, :subject, :course, :section].include?(k.to_sym) }
-      other_attributes[:instructor] = Instructor.where(name: other_attributes[:instructor]).first_or_create
+      if other_attributes[:instructor] && !other_attributes[:instructor].instance_of?(Instructor)
+        other_attributes[:instructor] = Instructor.where(name: other_attributes[:instructor]).first_or_create
+      elsif other_attributes[:instructor_id] && other_attributes[:instructor_id] != "0"
+        other_attributes[:instructor] = Instructor.where(id: other_attributes[:instructor_id]).first
+        other_attributes.delete(:instructor_id)
+      end
 
       [ key_attributes, other_attributes ]
   end
