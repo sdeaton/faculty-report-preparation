@@ -48,6 +48,15 @@ RSpec.describe EvaluationController, type: :controller do
       expect(Evaluation.count).to eq(1)
     end
 
+    it "creates a new instructor if necessary" do
+      eval = FactoryGirl.build(:evaluation, instructor_id: 0)
+      previous_evaluation_count = Evaluation.count
+      previous_instructor_count = Instructor.count
+      post :create, evaluation: eval.as_json.merge(instructor: "Brent Walther")
+      expect(Evaluation.count).to eq(previous_evaluation_count + 1)
+      expect(Instructor.count).to eq(previous_instructor_count + 1)
+    end
+
     it "renders the new page again if params are invalid" do
       eval = FactoryGirl.build(:evaluation, term: "summer")
       post :create, evaluation: eval.as_json
@@ -56,9 +65,9 @@ RSpec.describe EvaluationController, type: :controller do
 
     it "does not create an evaluation if parameters are invalid" do
       eval = FactoryGirl.build(:evaluation, term: "summer")
-      expect(Evaluation.count).to eq(0)
+      previous_evaluation_count = Evaluation.count
       post :create, evaluation: eval.as_json
-      expect(Evaluation.count).to eq(0)
+      expect(Evaluation.count).to eq(previous_evaluation_count)
     end
   end
 

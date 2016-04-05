@@ -91,15 +91,9 @@ class EvaluationController < ApplicationController
   end
 
   def evaluation_params
-    if params[:evaluation][:instructor_id] == "0"
-      instructor = Instructor.where(name: params[:evaluation][:instructor]).first_or_create
-      params[:evaluation][:instructor_id] = instructor.id
-    end
-    params[:evaluation].delete(:instructor)
-
     params.require(:evaluation).permit(:term, :subject, :course, :section, :instructor_id,
       :enrollment, :item1_mean, :item2_mean, :item3_mean, :item4_mean, :item5_mean,
-      :item6_mean, :item7_mean, :item8_mean)
+      :item6_mean, :item7_mean, :item8_mean, :instructor)
   end
 
   def eval_params
