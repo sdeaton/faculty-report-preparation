@@ -42,6 +42,7 @@ class EvaluationController < ApplicationController
 
   def edit
     @evaluation = Evaluation.find(evaluation_id)
+    render layout: "layouts/centered_form"
   end
 
   def update
