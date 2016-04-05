@@ -48,5 +48,6 @@
         - (1..8).each do |x|
           %td.highlighted= compute_weighted_average_for_item(x, group).round(2)
         %td.green-highlight= compute_mean_student_eval_score(group).round(2)
+        %td.green-highlight= compute_course_level_average(group, @evaluation_groups).round(2)
       %tr
         %td{colspan: 16}
