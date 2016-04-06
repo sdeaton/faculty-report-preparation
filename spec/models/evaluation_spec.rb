@@ -91,4 +91,10 @@ RSpec.describe Evaluation, type: :model do
       expect(Evaluation.default_sorted_groups).to eq([[g11, g12], [g21, g22]])
     end
   end
+
+  describe "#is_honors_section?" do
+    it "returns true for sections in the 200s which are honors sections" do
+      expect(FactoryGirl.build(:evaluation, section: 200).is_honors_section?).to eq(true)
+    end
+  end
 end

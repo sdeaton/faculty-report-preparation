@@ -7,17 +7,17 @@
 %table.table.table-bordered.table-condensed
   %thead
     %tr
-      %th Course
+      %th Undergraduate and Graduate Courses Taught
       %th Semester
-      %th Enrollment
+      %th No. of Students Enrolled
       %th Mean Student Evaluation Score
   %tbody
-    - @instructor.courses_taught.each do |course|
+    - @instructor.course_section_groups.each do |course_section_group|
       %tr
-        %td= "#{course.subject} #{course.course}"
-        %td= course.term
-        %td= course.total_enrollment
-        %td= course.mean_eval_score
+        %td= course_name_for(course_section_group)
+        %td= course_section_group.first.term
+        %td= compute_total_enrollment(course_section_group)
+        %td= compute_mean_student_eval_score(course_section_group).round(2)
 
   %tfoot
   / blank table row
@@ -26,4 +26,4 @@
 
   %tr
     %td{colspan: 2} TOTAL NUMBER OF STUDENTS
-    %td{colspan: 2}= @instructor.courses_taught.map(&:total_enrollment).inject(0) { |sum, n| sum+n }
+    %td{colspan: 2}= @instructor.course_section_groups.map { |course_section_group| compute_total_enrollment(course_section_group) }.reduce(:+)
