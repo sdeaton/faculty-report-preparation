@@ -47,4 +47,18 @@ class Evaluation < ActiveRecord::Base
     section.to_s.starts_with?("2")
   end
 
+<<<<<<< HEAD
+=======
+  def subject_course
+    "#{subject} #{course}"
+  end
+
+  def has_course_name?
+    !course_name.nil?
+  end
+
+  def course_name
+    CourseName.where(subject_course: subject_course).first.try(:name)
+  end
+>>>>>>> Add ability to specify a name for a course.
 end
