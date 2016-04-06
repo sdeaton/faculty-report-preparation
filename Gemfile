@@ -30,6 +30,8 @@ gem 'devise'
 # User rubyXL gem for reading and writing xlsx files
 gem 'rubyXL'
 
+gem 'rake', group: :test # for TravisCI
+
 group :development, :test do
   # Use sqlite3 as the database for Active Record
   gem 'sqlite3'
