@@ -72,23 +72,32 @@ RSpec.describe EvaluationController, type: :controller do
   end
 
   describe "GET #index" do
-    it "responds successfully with an HTTP 200 status code" do
+    it "redirects to the root path if no data exists" do
       get :index
-      expect(response).to be_success
-      expect(response).to have_http_status(200)
+      expect(response).to redirect_to(root_path)
     end
 
-
-    it "renders the evaluation index" do
+    it "redirects to the EvaluationController#show with the latest term if no params are given" do
+      FactoryGirl.create(:evaluation, term: "2015C")
+      FactoryGirl.create(:evaluation, term: "2014C")
       get :index
-      expect(response).to render_template("evaluation/index")
+      expect(response).to redirect_to(evaluation_path(id: "2015C"))
     end
 
+    it "redirects to EvaluationController#show with the passed term parameter if present" do
+      FactoryGirl.create(:evaluation, term: "2015C")
+      FactoryGirl.create(:evaluation, term: "2014C")
+      get :index, term: "2014C"
+      expect(response).to redirect_to(evaluation_path(id: "2014C"))
+    end
+  end
 
+  describe "GET #show" do
     it "assigns @evaluations" do
-        eval1 = FactoryGirl.create(:evaluation, course: 110)
-        eval2 = FactoryGirl.create(:evaluation, course: 111)
-        get :index
+        eval1 = FactoryGirl.create(:evaluation, course: 110, term: '2015C')
+        eval2 = FactoryGirl.create(:evaluation, course: 111, term: '2015C')
+        eval3 = FactoryGirl.create(:evaluation, course: 111, term: '2014C')
+        get :show, id: '2015C'
         expect(assigns(:evaluation_groups)).to eq([[eval1], [eval2]])
     end
 
@@ -96,7 +105,7 @@ RSpec.describe EvaluationController, type: :controller do
       eval1 = FactoryGirl.create(:evaluation, term: '2015C')
       eval2 = FactoryGirl.create(:evaluation, term: '2015B')
       eval3 = FactoryGirl.create(:evaluation, term: '2015B')
-      get :index
+      get :show, id: '2015C'
       expect(assigns(:terms)).to include(eval1.term)
       expect(assigns(:terms)).to include(eval2.term)
       expect(assigns(:terms).length).to be(2) # should only include unique terms!
@@ -128,7 +137,6 @@ RSpec.describe EvaluationController, type: :controller do
 
 
   describe "PUT #update" do
-
     before :each do
       @eval1 = FactoryGirl.create(:evaluation, enrollment: 47)
       @eval2 = FactoryGirl.create(:evaluation, enrollment: 22)
@@ -157,7 +165,5 @@ RSpec.describe EvaluationController, type: :controller do
       expect(@eval1.enrollment).to eq(47)
       expect(response).to render_template("evaluation/edit")
     end
-
   end
-
 end

@@ -8,10 +8,11 @@ Feature: Be able to navigate to other pages from home page
       And User should see PICA Utilities as a title
 
   Scenario: User wants to view evaluation data
+    Given There exists 1 group of 5 evaluation records in the database for instructor Brent Walther
     Given User is on the home page
     And User is authenticated
     When User clicks on the Evaluation Data button
-    Then User should see the evaluations page
+    Then User should see the evaluations page for 2015C
 
   Scenario: User wants to view faculty member historical data
     Given User is on the home page

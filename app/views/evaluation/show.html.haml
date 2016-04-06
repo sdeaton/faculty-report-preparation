@@ -4,8 +4,11 @@
     = link_to "Export This Report", export_evaluation_index_path, class: "btn btn-primary"
   = form_tag evaluation_index_path, method: :get, class: "form-inline" do
     .form-group
-      %label{ for: "term" } Select Term:
-      = select "term", "selection", @terms, {}, class: "form-control"
+      %label{for: "term"} Select Term:
+      %select{name: "term", id: "term", class: "form-control"}
+        - @terms.each do |term|
+          %option{value: term, selected: (term == params[:id] ? "selected" : nil)}= term
+    %button{type: "submit", class: "btn btn-primary"} Go
 
 %table.table.table-condensed
   %thead
