@@ -1,19 +1,2 @@
 module EvaluationHelper
-  def compute_total_enrollment(group)
-    group.inject(0) { |sum, eval| sum += eval.enrollment }
-  end
-
-  def compute_weighted_average_for_item(x, group)
-    group.inject(0) { |sum, eval| sum += eval.enrollment * eval.send("item#{x}_mean".to_sym) } / compute_total_enrollment(group)
-  end
-
-  def compute_mean_student_eval_score(group)
-    (1..8).inject(0) { |sum, x| sum += compute_weighted_average_for_item(x, group) } / 8
-  end
-
-  def compute_course_level_average(group, groups)
-    groups = groups.reject { |g| g.first.course[0] != group.first.course[0] }.
-        map { |g| compute_mean_student_eval_score(g) }
-    groups.reduce(:+) / groups.size
-  end
 end

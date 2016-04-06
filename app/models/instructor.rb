@@ -3,19 +3,8 @@ class Instructor < ActiveRecord::Base
 
   validates :name, presence: true, uniqueness: true
 
-  def courses_taught
-    eval_columns = (1..8).map { |num| "AVG(item#{num}_mean)" }.join("+")
-    grouped_courses.select([
-      :term,
-      :subject,
-      :course,
-      "SUM(enrollment) as total_enrollment",
-      "((#{eval_columns}) / 8.0) as mean_eval_score"
-    ])
-  end
-
-  def grouped_courses
-    evaluations.group([:term, :subject, :course])
+  def course_section_groups
+    evaluations.default_sorted_groups
   end
 
   def self.select_menu_options

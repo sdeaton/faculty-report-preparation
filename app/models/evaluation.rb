@@ -40,4 +40,8 @@ class Evaluation < ActiveRecord::Base
       eval.term.to_s + eval.subject.to_s + eval.course.to_s + eval.instructor.id.to_s + eval.section.to_s[0]
     end.sort { |group1, group2| group1.first <=> group2.first }.map(&:last)
   end
+
+  def is_honors_section?
+    section.to_s.starts_with?("2")
+  end
 end
