@@ -22,13 +22,8 @@ Given(/^There exists (\d+) evaluation record in the database for instructor (.+)
   end
 end
 
-
 When(/^User visits the evaluation page$/) do
   visit '/evaluation'
-end
-
-When(/^User clicks on (.+) link$/) do |button|
-  click_link(button, match: :first)
 end
 
 When(/^User is on edit page for user (.+)$/) do |n|

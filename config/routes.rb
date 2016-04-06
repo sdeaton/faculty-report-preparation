@@ -30,6 +30,8 @@ Rails.application.routes.draw do
     get 'export', on: :member
   end
 
+  resources :course_name
+
 
   # Example resource route with options:
   #   resources :products do
