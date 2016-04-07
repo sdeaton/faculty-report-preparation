@@ -18,7 +18,7 @@ class EvaluationController < ApplicationController
 
     if @evaluation.errors.empty?
       flash[:notice] = "Evaluation created."
-      redirect_to evaluation_index_path
+      redirect_to evaluation_index_path(term: @evaluation.term)
     else
       flash[:errors] = @evaluation.errors
       @instructors = Instructor.select_menu_options
@@ -27,8 +27,19 @@ class EvaluationController < ApplicationController
   end
 
   def index
-    @evaluation_groups = Evaluation.default_sorted_groups
-    @terms = Evaluation.pluck(:term).uniq
+    latest_term = params[:term] || Evaluation.pluck(:term).uniq.sort.reverse.first
+    if latest_term.nil?
+      flash[:notice] = "No evaluation data exists yet! Try importing some."
+      redirect_to root_path
+    else
+      redirect_to evaluation_path(id: latest_term)
+    end
+  end
+
+  def show
+    term = params[:id] || Evaluation.pluck(:term).uniq.sort.reverse.first
+    @evaluation_groups = Evaluation.where(term: term).default_sorted_groups
+    @terms = Evaluation.pluck(:term).uniq.sort.reverse
   end
 
   def import
