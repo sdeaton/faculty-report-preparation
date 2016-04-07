@@ -36,9 +36,9 @@ RSpec.describe EvaluationController, type: :controller do
 
   describe "POST #create" do
     it "redirects to the evaluation index page upon evaluation creation" do
-      eval = FactoryGirl.build(:evaluation)
+      eval = FactoryGirl.build(:evaluation, term: '2015C')
       post :create, evaluation: eval.as_json
-      expect(response).to redirect_to(evaluation_index_path)
+      expect(response).to redirect_to(evaluation_index_path(term: '2015C'))
     end
 
     it "creates a new evaluation if parameters are valid" do
