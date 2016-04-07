@@ -18,9 +18,12 @@ Rails.application.routes.draw do
   root :to => 'home#index'
 
   resources :evaluation do
-    get  'import', on: :collection
-    get  'export', on: :collection
-    post 'upload', on: :collection
+    get  'import',     on: :collection
+    get  'import_gpr', on: :collection
+    get  'export',     on: :collection
+
+    post 'upload',     on: :collection
+    post 'upload_gpr', on: :collection
   end
 
   resources :instructor do

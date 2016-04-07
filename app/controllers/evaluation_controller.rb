@@ -35,6 +35,10 @@ class EvaluationController < ApplicationController
     render layout: "layouts/centered_form"
   end
 
+  def import_gpr
+    render layout: "layouts/centered_form"
+  end
+
   def export
     # export not implemented yet
     redirect_to evaluation_index_path
@@ -70,6 +74,22 @@ class EvaluationController < ApplicationController
     num_updated_records = creation_results.length - num_new_records
 
     flash[:notice] = "#{num_new_records} new evaluations imported. #{num_updated_records} evaluations updated."
+    redirect_to evaluation_index_path
+  end
+
+  def upload_gpr
+    importer = ::GradeDistributionReportImporter.new(params.require(:data_file).tempfile)
+    creation_results = importer.grades_hashes.map do |gpr_attrs|
+      key_attrs, other_attrs = split_attributes(gpr_attrs)
+      key_attrs.merge({ term: params.require(:term) })
+
+      Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
+    end
+
+    num_new_records = creation_results.count { |result| result == true }
+    num_updated_records = creation_results.length - num_new_records
+
+    flash[:notice] = "#{num_new_records} new GPRs imported. #{num_updated_records} evaluation GPRs updated."
     redirect_to evaluation_index_path
   end
 
