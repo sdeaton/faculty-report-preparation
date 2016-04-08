@@ -2,9 +2,9 @@ class Evaluation < ActiveRecord::Base
   belongs_to :instructor
   validates_associated :instructor
 
-  validates :term, presence: true, format: { with: /[12][0-9]{3}[A-Z]/,
+  validates :term, presence: true, format: { with: /\A[12][0-9]{3}[A-Z]\z/,
     message: "must be in the format: xxxxY where xxxx is year and Y is semester letter. Example: 2015C" }
-  validates :subject, presence: true, format: { with: /[A-Z]{4}/,
+  validates :subject, presence: true, format: { with: /\A[A-Z]{4}\z/,
     message: "must be four capital letters." }
   validates :course, presence: true, numericality: { only_integer: true }
   validates :section, presence: true, numericality: { only_integer: true }
@@ -39,5 +39,9 @@ class Evaluation < ActiveRecord::Base
     all.group_by do |eval|
       eval.term.to_s + eval.subject.to_s + eval.course.to_s + eval.instructor.id.to_s + eval.section.to_s[0]
     end.sort { |group1, group2| group1.first <=> group2.first }.map(&:last)
+  end
+
+  def is_honors_section?
+    section.to_s.starts_with?("2")
   end
 end

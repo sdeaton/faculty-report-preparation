@@ -1,9 +1,14 @@
 %p.text-right
-  = link_to "Download", export_evaluation_index_path, class: "btn btn-primary pull-right"
+  .pull-right
+    = link_to "Import PICA Data", import_evaluation_index_path, class: "btn btn-primary"
+    = link_to "Export This Report", export_evaluation_index_path, class: "btn btn-primary"
   = form_tag evaluation_index_path, method: :get, class: "form-inline" do
     .form-group
-      %label{ for: "term" } Select Term:
-      = select "term", "selection", @terms, {}, class: "form-control"
+      %label{for: "term"} Select Term:
+      %select{name: "term", id: "term", class: "form-control"}
+        - @terms.each do |term|
+          %option{value: term, selected: (term == params[:id] ? "selected" : nil)}= term
+    %button{type: "submit", class: "btn btn-primary"} Go
 
 %table.table.table-condensed
   %thead
@@ -19,6 +24,7 @@
         %th
           = "Item #{num} mean"
       %th Mean Student Eval Score
+      %th Course Level Average
 
   %tbody
     - @evaluation_groups.each do |group|
@@ -41,12 +47,13 @@
           - (1..8).each do |num|
             %td
               = evaluation.method("item#{num}_mean".to_sym).call
-          %td
+          %td{colspan: 2}
       %tr
         %td{colspan: 6}
         %td= compute_total_enrollment(group)
         - (1..8).each do |x|
           %td.highlighted= compute_weighted_average_for_item(x, group).round(2)
         %td.green-highlight= compute_mean_student_eval_score(group).round(2)
+        %td.green-highlight= compute_course_level_average(group, @evaluation_groups).round(2)
       %tr
-        %td{colspan: 16}
+        %td{colspan: 17}

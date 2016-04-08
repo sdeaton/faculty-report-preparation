@@ -36,9 +36,9 @@ RSpec.describe EvaluationController, type: :controller do
 
   describe "POST #create" do
     it "redirects to the evaluation index page upon evaluation creation" do
-      eval = FactoryGirl.build(:evaluation)
+      eval = FactoryGirl.build(:evaluation, term: '2015C')
       post :create, evaluation: eval.as_json
-      expect(response).to redirect_to(evaluation_index_path)
+      expect(response).to redirect_to(evaluation_index_path(term: '2015C'))
     end
 
     it "creates a new evaluation if parameters are valid" do
@@ -46,6 +46,15 @@ RSpec.describe EvaluationController, type: :controller do
       expect(Evaluation.count).to eq(0)
       post :create, evaluation: eval.as_json
       expect(Evaluation.count).to eq(1)
+    end
+
+    it "creates a new instructor if necessary" do
+      eval = FactoryGirl.build(:evaluation, instructor_id: 0)
+      previous_evaluation_count = Evaluation.count
+      previous_instructor_count = Instructor.count
+      post :create, evaluation: eval.as_json.merge(instructor: "Brent Walther")
+      expect(Evaluation.count).to eq(previous_evaluation_count + 1)
+      expect(Instructor.count).to eq(previous_instructor_count + 1)
     end
 
     it "renders the new page again if params are invalid" do
@@ -56,30 +65,39 @@ RSpec.describe EvaluationController, type: :controller do
 
     it "does not create an evaluation if parameters are invalid" do
       eval = FactoryGirl.build(:evaluation, term: "summer")
-      expect(Evaluation.count).to eq(0)
+      previous_evaluation_count = Evaluation.count
       post :create, evaluation: eval.as_json
-      expect(Evaluation.count).to eq(0)
+      expect(Evaluation.count).to eq(previous_evaluation_count)
     end
   end
 
   describe "GET #index" do
-    it "responds successfully with an HTTP 200 status code" do
+    it "redirects to the root path if no data exists" do
       get :index
-      expect(response).to be_success
-      expect(response).to have_http_status(200)
+      expect(response).to redirect_to(root_path)
     end
 
-
-    it "renders the evaluation index" do
+    it "redirects to the EvaluationController#show with the latest term if no params are given" do
+      FactoryGirl.create(:evaluation, term: "2015C")
+      FactoryGirl.create(:evaluation, term: "2014C")
       get :index
-      expect(response).to render_template("evaluation/index")
+      expect(response).to redirect_to(evaluation_path(id: "2015C"))
     end
 
+    it "redirects to EvaluationController#show with the passed term parameter if present" do
+      FactoryGirl.create(:evaluation, term: "2015C")
+      FactoryGirl.create(:evaluation, term: "2014C")
+      get :index, term: "2014C"
+      expect(response).to redirect_to(evaluation_path(id: "2014C"))
+    end
+  end
 
+  describe "GET #show" do
     it "assigns @evaluations" do
-        eval1 = FactoryGirl.create(:evaluation, course: 110)
-        eval2 = FactoryGirl.create(:evaluation, course: 111)
-        get :index
+        eval1 = FactoryGirl.create(:evaluation, course: 110, term: '2015C')
+        eval2 = FactoryGirl.create(:evaluation, course: 111, term: '2015C')
+        eval3 = FactoryGirl.create(:evaluation, course: 111, term: '2014C')
+        get :show, id: '2015C'
         expect(assigns(:evaluation_groups)).to eq([[eval1], [eval2]])
     end
 
@@ -87,7 +105,7 @@ RSpec.describe EvaluationController, type: :controller do
       eval1 = FactoryGirl.create(:evaluation, term: '2015C')
       eval2 = FactoryGirl.create(:evaluation, term: '2015B')
       eval3 = FactoryGirl.create(:evaluation, term: '2015B')
-      get :index
+      get :show, id: '2015C'
       expect(assigns(:terms)).to include(eval1.term)
       expect(assigns(:terms)).to include(eval2.term)
       expect(assigns(:terms).length).to be(2) # should only include unique terms!
@@ -119,7 +137,6 @@ RSpec.describe EvaluationController, type: :controller do
 
 
   describe "PUT #update" do
-
     before :each do
       @eval1 = FactoryGirl.create(:evaluation, enrollment: 47)
       @eval2 = FactoryGirl.create(:evaluation, enrollment: 22)
@@ -148,7 +165,6 @@ RSpec.describe EvaluationController, type: :controller do
       expect(@eval1.enrollment).to eq(47)
       expect(response).to render_template("evaluation/edit")
     end
-
   end
   
   describe "POST #upload" do
@@ -158,5 +174,6 @@ RSpec.describe EvaluationController, type: :controller do
       expect(response).to redirect_to("/evaluation")
     end
   end
+
 
 end

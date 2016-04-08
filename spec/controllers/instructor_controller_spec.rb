@@ -13,7 +13,7 @@ RSpec.describe InstructorController, type: :controller do
     sign_in @user
   end
 
-  describe "GET #instructor" do
+  describe "GET #index" do
     it "responds successfully with an HTTP 200 status code" do
       get :index
       expect(response).to be_success
@@ -39,6 +39,20 @@ RSpec.describe InstructorController, type: :controller do
         williams = Instructor.create(name: "Tiffani Williams")
         get :index
         expect(assigns(:instructors)).to eq([daugherity,hurley,williams])
+    end
+  end
+
+  describe "GET #show" do
+    let (:inst) { Instructor.create(name: 'Brent Walther') }
+
+    it "responds successfully" do
+      get :show, { id: inst.id }
+      expect(response).to be_success
+    end
+
+    it "assigns @instructor" do
+      get :show, { id: inst.id }
+      expect(assigns(:instructor)).to eq(inst)
     end
   end
 

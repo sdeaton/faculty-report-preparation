@@ -1,15 +1,17 @@
 require 'rails_helper'
 
-# Specs in this file have access to a helper object that includes
-# the InstructorHelper. For example:
-#
-# describe InstructorHelper do
-#   describe "string concat" do
-#     it "concats two strings with spaces" do
-#       expect(helper.concat_strings("this","that")).to eq("this that")
-#     end
-#   end
-# end
 RSpec.describe InstructorHelper, type: :helper do
-  pending "No InstructorHelper code to test yet."
+  describe "#course_name_for" do
+    it "returns the subject and course number appended" do
+      inst = FactoryGirl.create(:instructor)
+      FactoryGirl.create(:evaluation, instructor: inst, subject: "CSCE", course: "121")
+      expect(helper.course_name_for(inst.course_section_groups[0])).to eq("CSCE 121")
+    end
+
+    it "appends H to the course name if it is honors" do
+      inst = FactoryGirl.create(:instructor)
+      FactoryGirl.create(:evaluation, instructor: inst, subject: "CSCE", course: "121", section: 200)
+      expect(helper.course_name_for(inst.course_section_groups[0])).to eq("CSCE 121H")
+    end
+  end
 end
