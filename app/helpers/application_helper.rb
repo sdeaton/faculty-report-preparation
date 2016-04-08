@@ -12,7 +12,7 @@ module ApplicationHelper
   end
 
   def compute_course_level_average(group, groups)
-    groups = groups.reject { |g| g.first.course[0] != group.first.course[0] }.
+    groups = groups.reject { |g| g.first.course.to_s[0] != group.first.course.to_s[0] }.
         map { |g| compute_mean_student_eval_score(g) }
     groups.reduce(:+) / groups.size
   end
