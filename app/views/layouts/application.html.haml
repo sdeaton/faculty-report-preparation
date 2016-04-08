@@ -24,8 +24,10 @@
       %div.alert.alert-info= notice
     - if alert.present?
       %div.alert.alert-warning= alert
-    - if flash[:errors]
+    - if flash[:errors].present? && flash[:errors].respond_to?(:full_messages)
       - flash[:errors].full_messages.each do |error|
         %div.alert.alert-danger= error
+    - elsif flash[:errors].present? && flash[:errors].instance_of?(String)
+      %div.alert.alert-danger= flash[:errors]
 
     = content_for?(:content) ? yield(:content) : yield

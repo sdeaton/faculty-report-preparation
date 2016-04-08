@@ -17,5 +17,17 @@ RSpec.describe PicaReportImporter do
         end
       end
     end
+    
+    it "should have read in 9 entries" do
+      hashes = PicaReportImporter.new(mock_file).evaluation_hashes
+      expect(hashes.size).to be(9)
+    end
+    
+    it "each entry should contain 14 columns" do
+      hashes = PicaReportImporter.new(mock_file).evaluation_hashes
+      hashes.each do |hash|
+        expect(hash.size).to be(14)
+      end
+    end
   end
 end

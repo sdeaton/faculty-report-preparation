@@ -150,5 +150,13 @@ RSpec.describe EvaluationController, type: :controller do
     end
 
   end
+  
+  describe "POST #upload" do
+    it "accepts .xlsx files for uploading" do
+      @file = fixture_file_upload('/StatisticsReport.xlsx', 'application/vnd.ms-excel')
+      post :upload, :data_file => @file
+      expect(response).to redirect_to("/evaluation")
+    end
+  end
 
 end

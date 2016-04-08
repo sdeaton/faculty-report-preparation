@@ -61,15 +61,17 @@ class EvaluationController < ApplicationController
     importer = ::PicaReportImporter.new(params.require(:data_file))
     creation_results = importer.evaluation_hashes.map do |eval_attrs|
       key_attrs, other_attrs = split_attributes(eval_attrs)
-
+      
       Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
     end
-
     num_new_records = creation_results.count { |result| result == true }
     num_updated_records = creation_results.length - num_new_records
 
     flash[:notice] = "#{num_new_records} new evaluations imported. #{num_updated_records} evaluations updated."
     redirect_to evaluation_index_path
+    rescue
+      flash[:errors] = "Error with file upload, please check your file"
+      redirect_to import_evaluation_index_path
   end
 
   private

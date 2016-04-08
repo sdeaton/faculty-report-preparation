@@ -13,6 +13,7 @@ class PicaReportImporter
   RENAMES = { :sect => :section }
 
   def initialize(uploaded_file)
+    # TODO: check for wrong filetype here
     @workbook = RubyXL::Parser.parse_buffer(uploaded_file.tempfile)
   end
 
