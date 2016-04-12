@@ -1,6 +1,6 @@
 module ApplicationHelper
   def compute_total_enrollment(group)
-    group.inject(0) { |sum, eval| sum += eval.enrollment }
+    group.map(&:enrollment).inject(:+)
   end
 
   def compute_weighted_average_for_item(x, group)
@@ -15,5 +15,11 @@ module ApplicationHelper
     groups = groups.reject { |g| g.first.course.to_s[0] != group.first.course.to_s[0] }.
         map { |g| compute_mean_student_eval_score(g) }
     groups.reduce(:+) / groups.size
+  end
+
+  def compute_mean_gpr(group)
+    gprs = group.map(&:gpr)
+    return nil if gprs.any?(&:nil?)
+    gprs.inject(:+) / gprs.size
   end
 end
