@@ -1,7 +1,7 @@
 class Instructor < ActiveRecord::Base
   has_many :evaluations
 
-  validates :name, presence: true, uniqueness: true
+  validates :name, uniqueness: true
 
   def course_section_groups
     evaluations.default_sorted_groups
