@@ -94,19 +94,26 @@ class EvaluationController < ApplicationController
   end
 
   def upload_gpr
-    importer = ::GradeDistributionReportImporter.new(params.require(:data_file).tempfile)
-    creation_results = importer.grades_hashes.map do |gpr_attrs|
-      key_attrs, other_attrs = split_attributes(gpr_attrs)
-      key_attrs.merge({ term: params.require(:term) })
+    if params[:term] && params[:term].match(/\A[12][0-9]{3}[A-Z]\z/)
+      importer = ::GradeDistributionReportImporter.new(params.require(:data_file).tempfile, params[:term])
+      creation_results = importer.grades_hashes.map do |gpr_attrs|
+        key_attrs, other_attrs = split_attributes(gpr_attrs)
 
-      Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
+        Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
+      end
+
+      num_new_records = creation_results.count { |result| result == true }
+      num_updated_records = creation_results.length - num_new_records
+
+      flash[:notice] = "#{num_new_records} new GPRs imported. #{num_updated_records} evaluation GPRs updated."
+      redirect_to evaluation_index_path
+    else
+      flash[:errors] = "Term is either missing or in the incorrect format."
+      redirect_to import_gpr_evaluation_index_path
     end
-
-    num_new_records = creation_results.count { |result| result == true }
-    num_updated_records = creation_results.length - num_new_records
-
-    flash[:notice] = "#{num_new_records} new GPRs imported. #{num_updated_records} evaluation GPRs updated."
-    redirect_to evaluation_index_path
+  rescue PDF::Reader::MalformedPDFError => ex
+    flash[:errors] = "There was an error parsing that PDF file. Maybe it is corrupt?"
+    redirect_to import_gpr_evaluation_index_path
   end
 
   private

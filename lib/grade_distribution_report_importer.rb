@@ -10,8 +10,9 @@ class GradeDistributionReportImporter
 
   TOLERANCE = 2
 
-  def initialize(filename)
+  def initialize(filename, term)
     @reader = PDF::Reader::Turtletext.new(filename)
+    @term = term
   end
 
   def grades_hashes
@@ -24,10 +25,12 @@ class GradeDistributionReportImporter
       grade.delete(:x) # throw away the "x" value used for grabbing data from the PDF
       section_pieces = grade[:section].split("-") # section looks like "CSCE-111-501"
       {
-        subject: section_pieces[0],
-        course:  section_pieces[1],
-        section: section_pieces[2],
-        gpr:     grade[:gpr]
+        subject:    section_pieces[0],
+        course:     section_pieces[1],
+        section:    section_pieces[2],
+        instructor: grade[:instructor],
+        gpr:        grade[:gpr],
+        term:       @term
       }
     end
   end

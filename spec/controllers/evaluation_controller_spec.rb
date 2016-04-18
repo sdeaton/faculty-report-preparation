@@ -170,42 +170,42 @@ RSpec.describe EvaluationController, type: :controller do
   describe "POST #upload" do
     it "fails gracefully for non .xlsx fils" do
       @file = fixture_file_upload('/random.dat', 'application/octet-stream')
-      post :upload, :data_file => @file
+      post :upload, data_file: @file
       expect(response).to redirect_to(import_evaluation_index_path)
       expect(flash[:errors]).to_not be(nil)
     end
 
     it "gracefully rejects malformatted .xlsx files" do
       @file = fixture_file_upload('/StatisticsReport_withoutCourseColumn.xlsx', 'application/vnd.ms-excel')
-      post :upload, :data_file => @file
+      post :upload, data_file: @file
       expect(response).to redirect_to(import_evaluation_index_path)
       expect(flash[:errors]).to_not be(nil)
     end
 
     it "accepts .xlsx files for uploading" do
       @file = fixture_file_upload('/StatisticsReport.xlsx', 'application/vnd.ms-excel')
-      post :upload, :data_file => @file
+      post :upload, data_file: @file
       expect(response).to redirect_to("/evaluation")
     end
 
     it "creates evaluation records for data the test file" do
       @file = fixture_file_upload('/StatisticsReport.xlsx', 'application/vnd.ms-excel')
       expect(Evaluation.count).to eq(0)
-      post :upload, :data_file => @file
+      post :upload, data_file: @file
       expect(Evaluation.count).to eq(9)
     end
 
     it "creates instructor records for data the test file" do
       @file = fixture_file_upload('/StatisticsReport.xlsx', 'application/vnd.ms-excel')
       expect(Instructor.count).to eq(0)
-      post :upload, :data_file => @file
+      post :upload, data_file: @file
       expect(Instructor.count).to eq(3)
     end
 
     it "creates the correct evaluation records for the test data" do
       @file = fixture_file_upload('/StatisticsReport.xlsx', 'application/vnd.ms-excel')
       expect(Evaluation.count).to eq(0)
-      post :upload, :data_file => @file
+      post :upload, data_file: @file
       expect(Evaluation.where(term: '2015C').count).to eq(9)
       expect(Evaluation.where(subject: 'CSCE').count).to eq(9)
       expect(Evaluation.where(course: '131').count).to eq(6)
@@ -215,7 +215,39 @@ RSpec.describe EvaluationController, type: :controller do
     end
   end
 
+  describe "GET #import_gpr" do
+    it "renders the pretty centered form template" do
+      get :import_gpr
+      expect(response).to render_template 'layouts/centered_form'
+    end
+  end
+
   describe "POST #upload_gpr" do
+    it "fails gracefully for non .pdf fils" do
+      @file = fixture_file_upload('/random.dat', 'application/octet-stream')
+      post :upload_gpr, data_file: @file, term: '2015C'
+      expect(response).to redirect_to(import_gpr_evaluation_index_path)
+      expect(flash[:errors]).to_not be(nil)
+    end
+
+    it "fails gracefully if term is missing" do
+      @file = fixture_file_upload('/grade_distribution.pdf', 'application/pdf')
+      post :upload_gpr, data_file: @file
+      expect(response).to redirect_to(import_gpr_evaluation_index_path)
+      expect(flash[:errors]).to_not be(nil)
+    end
+
+    it "accepts .pdf files for uploading" do
+      @file = fixture_file_upload('/grade_distribution.pdf', 'application/pdf')
+      post :upload_gpr, data_file: @file, term: '2015C'
+      expect(response).to redirect_to("/evaluation")
+    end
+
+    it "creates evaluation records for each GPR found" do
+      @file = fixture_file_upload('/grade_distribution.pdf', 'application/pdf')
+      post :upload_gpr, data_file: @file, term: '2015C'
+      expect(Evaluation.count).to eq(11)
+    end
   end
 
 
