@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160408215456) do
+ActiveRecord::Schema.define(version: 20160418150933) do
 
   create_table "course_names", force: true do |t|
     t.string   "subject_course"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20160408215456) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "extra_name"
   end
 
   create_table "users", force: true do |t|
