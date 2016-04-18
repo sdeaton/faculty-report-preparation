@@ -74,7 +74,7 @@ class EvaluationController < ApplicationController
 
   # TODO: clean this up a little but. It should be easy to follow, but it's a little long.
   def upload
-    importer = ::PicaReportImporter.new(params.require(:data_file))
+    importer = ::PicaReportImporter.new(params.require(:data_file).tempfile)
     creation_results = importer.evaluation_hashes.map do |eval_attrs|
       key_attrs, other_attrs = split_attributes(eval_attrs)
 

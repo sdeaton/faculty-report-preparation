@@ -21,7 +21,7 @@ class PicaReportImporter
 
   def initialize(uploaded_file)
     # TODO: check for wrong filetype here
-    @workbook = RubyXL::Parser.parse_buffer(uploaded_file.tempfile)
+    @workbook = RubyXL::Parser.parse_buffer(uploaded_file)
   end
 
   def evaluation_hashes

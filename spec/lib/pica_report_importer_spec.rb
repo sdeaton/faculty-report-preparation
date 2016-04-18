@@ -1,12 +1,6 @@
-class TempFileMocker
-  def tempfile
-    File.new(Rails.root.join('spec', 'test_files', 'StatisticsReport.xlsx'))
-  end
-end
-
 RSpec.describe PicaReportImporter do
 
-  let(:mock_file) { TempFileMocker.new }
+  let(:mock_file) { File.new(Rails.root.join('spec', 'test_files', 'StatisticsReport.xlsx')) }
 
   describe "#evaluation_hashes" do
     it "doesn't have nil attributes anywhere" do
@@ -17,12 +11,12 @@ RSpec.describe PicaReportImporter do
         end
       end
     end
-    
+
     it "should have read in 9 entries" do
       hashes = PicaReportImporter.new(mock_file).evaluation_hashes
       expect(hashes.size).to be(9)
     end
-    
+
     it "each entry should contain 14 columns" do
       hashes = PicaReportImporter.new(mock_file).evaluation_hashes
       hashes.each do |hash|
