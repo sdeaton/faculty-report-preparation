@@ -2,6 +2,13 @@ require 'rubyXL'
 
 class PicaReportImporter
 
+  class MalformedFileException < RuntimeError
+    def to_s
+      "Your file appears to be invalid. Please make sure each of the columns are present: " +
+          ::PicaReportImporter::DESIRED_DATA.map(&:to_s).join(", ")
+    end
+  end
+
   # These are symbolized version of the expected column headings of all the data we care about.
   # TODO: in the future, it might be nice to make these configurable by the user
   DESIRED_DATA = [
@@ -34,7 +41,9 @@ class PicaReportImporter
 
       evaluation = {}
       DESIRED_DATA.each do |data_type|
-        cell = row.cells[column_header_indices[data_type]]
+        row_index = column_header_indices[data_type]
+        raise MalformedFileException.new if row_index.nil?
+        cell = row.cells[row_index]
 
         data_type = RENAMES[data_type] if RENAMES[data_type]
         evaluation[data_type] = cell && cell.value

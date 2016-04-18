@@ -166,13 +166,56 @@ RSpec.describe EvaluationController, type: :controller do
       expect(response).to render_template("evaluation/edit")
     end
   end
-  
+
   describe "POST #upload" do
+    it "fails gracefully for non .xlsx fils" do
+      @file = fixture_file_upload('/random.dat', 'application/octet-stream')
+      post :upload, :data_file => @file
+      expect(response).to redirect_to(import_evaluation_index_path)
+      expect(flash[:errors]).to_not be(nil)
+    end
+
+    it "gracefully rejects malformatted .xlsx files" do
+      @file = fixture_file_upload('/StatisticsReport_withoutCourseColumn.xlsx', 'application/vnd.ms-excel')
+      post :upload, :data_file => @file
+      expect(response).to redirect_to(import_evaluation_index_path)
+      expect(flash[:errors]).to_not be(nil)
+    end
+
     it "accepts .xlsx files for uploading" do
       @file = fixture_file_upload('/StatisticsReport.xlsx', 'application/vnd.ms-excel')
       post :upload, :data_file => @file
       expect(response).to redirect_to("/evaluation")
     end
+
+    it "creates evaluation records for data the test file" do
+      @file = fixture_file_upload('/StatisticsReport.xlsx', 'application/vnd.ms-excel')
+      expect(Evaluation.count).to eq(0)
+      post :upload, :data_file => @file
+      expect(Evaluation.count).to eq(9)
+    end
+
+    it "creates instructor records for data the test file" do
+      @file = fixture_file_upload('/StatisticsReport.xlsx', 'application/vnd.ms-excel')
+      expect(Instructor.count).to eq(0)
+      post :upload, :data_file => @file
+      expect(Instructor.count).to eq(3)
+    end
+
+    it "creates the correct evaluation records for the test data" do
+      @file = fixture_file_upload('/StatisticsReport.xlsx', 'application/vnd.ms-excel')
+      expect(Evaluation.count).to eq(0)
+      post :upload, :data_file => @file
+      expect(Evaluation.where(term: '2015C').count).to eq(9)
+      expect(Evaluation.where(subject: 'CSCE').count).to eq(9)
+      expect(Evaluation.where(course: '131').count).to eq(6)
+
+      instructor_brent = Instructor.where(name: 'Brent Walther').first
+      expect(Evaluation.where(instructor_id: instructor_brent).count).to eq(3)
+    end
+  end
+
+  describe "POST #upload_gpr" do
   end
 
 
