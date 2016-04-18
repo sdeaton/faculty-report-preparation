@@ -12,7 +12,7 @@ end
 
 When(/^User selects a non-excel file$/) do
   page.attach_file("data_file", Rails.root + 'spec/fixtures/ruby-capybara.zip')
-end  
+end
 
 Then(/^User should be on the evaluation page for term (.+)$/) do |term|
   current_path.should == "/evaluation/" + term
