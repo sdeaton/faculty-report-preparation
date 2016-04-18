@@ -9,15 +9,15 @@ class Evaluation < ActiveRecord::Base
   validates :course, presence: true, numericality: { only_integer: true }
   validates :section, presence: true, numericality: { only_integer: true }
   validates :instructor, presence: true
-  validates :enrollment, presence: true, numericality: { only_integer: true }
-  validates :item1_mean, presence: true, numericality: true
-  validates :item2_mean, presence: true, numericality: true
-  validates :item3_mean, presence: true, numericality: true
-  validates :item4_mean, presence: true, numericality: true
-  validates :item5_mean, presence: true, numericality: true
-  validates :item6_mean, presence: true, numericality: true
-  validates :item7_mean, presence: true, numericality: true
-  validates :item8_mean, presence: true, numericality: true
+  validates :enrollment, numericality: { only_integer: true }
+  validates :item1_mean, numericality: true
+  validates :item2_mean, numericality: true
+  validates :item3_mean, numericality: true
+  validates :item4_mean, numericality: true
+  validates :item5_mean, numericality: true
+  validates :item6_mean, numericality: true
+  validates :item7_mean, numericality: true
+  validates :item8_mean, numericality: true
 
   def self.create_if_needed_and_update(key_attrs, other_attrs)
     evaluation = where(key_attrs).first_or_initialize
