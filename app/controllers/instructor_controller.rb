@@ -9,7 +9,7 @@ class InstructorController < ApplicationController
 
   def show
     @instructor = Instructor.find(id)
-    @evaluation_groups = Evaluation.default_sorted_groups
+    @evaluation_groups = Evaluation.no_missing_data.default_sorted_groups
   end
 
   def export
