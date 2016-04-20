@@ -97,4 +97,27 @@ RSpec.describe Evaluation, type: :model do
       expect(FactoryGirl.build(:evaluation, section: 200).is_honors_section?).to eq(true)
     end
   end
+
+  describe "#has_course_name?" do
+    it "returns true if the course has a course name" do
+      name = "MyName"
+      eval = FactoryGirl.create(:evaluation, subject: "CSCE", course: 121)
+      FactoryGirl.create(:course_name, subject_course: "CSCE 121", name: name)
+      expect(eval.has_course_name?).to eq(true)
+    end
+
+    it "returns false if the course does not have a course name" do
+      eval = FactoryGirl.create(:evaluation, subject: "CSCE", course: 121)
+      expect(eval.has_course_name?).to eq(false)
+    end
+  end
+
+  describe "#course_name" do
+    it "returns the course name" do
+      name = "MyName"
+      eval = FactoryGirl.create(:evaluation, subject: "CSCE", course: 121)
+      FactoryGirl.create(:course_name, subject_course: "CSCE 121", name: name)
+      expect(eval.course_name).to eq(name)
+    end
+  end
 end

@@ -31,6 +31,10 @@ When(/^User clicks on the (.+) button$/) do |buttonName|
   click_on(buttonName)
 end
 
+When(/^User clicks on (.+) link$/) do |button|
+  click_link(button, match: :first)
+end
+
 When(/^User fills in ([A-Za-z0-9 ,.]+)$/) do |fill_ins|
   fill_ins.split(",").each do |fill_in|
     field_name, value = fill_in.strip.split(" with ")
