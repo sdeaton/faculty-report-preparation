@@ -49,7 +49,7 @@ class PicaReportImporter
         evaluation[data_type] = cell && cell.value
       end
 
-      evaluations.push(evaluation)
+      evaluations.push(evaluation) if evaluation.values.reject(&:nil?).size > 0
     end
 
     evaluations

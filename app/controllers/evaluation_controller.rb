@@ -82,12 +82,12 @@ class EvaluationController < ApplicationController
       importer = ::PicaReportImporter.new(params.require(:data_file).tempfile)
       creation_results = importer.evaluation_hashes.map do |eval_attrs|
         key_attrs, other_attrs = split_attributes(eval_attrs)
-  
+
         Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
       end
       num_new_records = creation_results.count { |result| result == true }
       num_updated_records = creation_results.length - num_new_records
-  
+
       flash[:notice] = "#{num_new_records} new evaluations imported. #{num_updated_records} evaluations updated."
       redirect_to evaluation_index_path
     else
@@ -119,7 +119,7 @@ class EvaluationController < ApplicationController
     elsif params[:data_file] != nil
       flash[:errors] = "Term is either missing or in the incorrect format."
       redirect_to import_gpr_evaluation_index_path
-    else 
+    else
       flash[:errors] = "File not attached, please select file to upload"
       redirect_to import_gpr_evaluation_index_path
     end
@@ -148,7 +148,7 @@ class EvaluationController < ApplicationController
   def evaluation_params
     params.require(:evaluation).permit(:term, :subject, :course, :section, :instructor_id,
       :enrollment, :item1_mean, :item2_mean, :item3_mean, :item4_mean, :item5_mean,
-      :item6_mean, :item7_mean, :item8_mean, :instructor)
+      :item6_mean, :item7_mean, :item8_mean, :instructor, :gpr)
   end
 
   def evaluation_id

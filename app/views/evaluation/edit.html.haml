@@ -20,14 +20,20 @@
       %p.form-control-static= @evaluation.section
 
   .form-group
-    = render partial: 'evaluation/enrollment.html.haml', :locals => {:f => f} 
+    = render partial: 'evaluation/enrollment.html.haml', :locals => {:f => f}
 
     #instructor_select_wrapper
     %label{for: "evaluation_instructor_id", class: "col-sm-2 control-label"} Instructor
     .col-sm-4
       %p.form-control-static= link_to @evaluation.instructor.name, instructor_path(id: @evaluation.instructor.id)
 
-  = render partial: 'evaluation/items.html.haml', :locals => {:f => f} 
+  = render partial: 'evaluation/items.html.haml', :locals => {:f => f}
+
+  .form-group
+    %label{for: "evaluation_gpr", class: "col-sm-2 control-label"} GPR
+    .col-sm-4
+      = f.text_field :gpr, class: "form-control", placeholder: "e.g. 4.0"
+
   .form-group
     .col-sm-10.col-sm-offset-2
       = f.submit "Edit Evaluation", class: "btn btn-primary"

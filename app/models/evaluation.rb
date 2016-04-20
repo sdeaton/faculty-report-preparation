@@ -19,8 +19,8 @@ class Evaluation < ActiveRecord::Base
   validates :item8_mean, numericality: { allow_blank: true }
 
   scope :no_missing_data, -> {where.not("enrollment is NULL OR item1_mean is NULL OR item2_mean is NULL OR item3_mean is NULL OR item4_mean is NULL OR item5_mean is NULL OR item6_mean is NULL OR item7_mean is NULL OR item8_mean is NULL")}
-  scope :missing_data, -> {where("enrollment is NULL OR item1_mean is NULL OR item2_mean is NULL OR item3_mean is NULL OR item4_mean is NULL OR item5_mean is NULL OR item6_mean is NULL OR item7_mean is NULL OR item8_mean is NULL")}
-  
+  scope :missing_data, -> {where("enrollment is NULL OR item1_mean is NULL OR item2_mean is NULL OR item3_mean is NULL OR item4_mean is NULL OR item5_mean is NULL OR item6_mean is NULL OR item7_mean is NULL OR item8_mean is NULL OR gpr is NULL")}
+
   def self.create_if_needed_and_update(key_attrs, other_attrs)
     evaluation = where(key_attrs).first_or_initialize
     is_new_record = evaluation.new_record?
