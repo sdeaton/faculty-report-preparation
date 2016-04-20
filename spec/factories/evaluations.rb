@@ -14,5 +14,6 @@ FactoryGirl.define do
     item6_mean '4.32'
     item7_mean '4.32'
     item8_mean '4.32'
+    gpr '3.5'
   end
 end

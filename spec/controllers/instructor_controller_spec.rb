@@ -29,6 +29,7 @@ RSpec.describe InstructorController, type: :controller do
 
     it "assigns @instructors" do
         instr = FactoryGirl.create(:instructor)
+        FactoryGirl.create(:evaluation, instructor_id: instr.id)
         get :index
         expect(assigns(:instructors)).to eq([instr])
     end
@@ -37,6 +38,9 @@ RSpec.describe InstructorController, type: :controller do
         hurley = Instructor.create(name: "Joseph Daniel Hurley")
         daugherity = Instructor.create(name: "Walter Daugherity")
         williams = Instructor.create(name: "Tiffani Williams")
+        FactoryGirl.create(:evaluation, instructor_id: hurley.id)
+        FactoryGirl.create(:evaluation, instructor_id: daugherity.id)
+        FactoryGirl.create(:evaluation, instructor_id: williams.id)
         get :index
         expect(assigns(:instructors)).to eq([daugherity,hurley,williams])
     end
