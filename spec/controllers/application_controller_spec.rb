@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe ApplicationController do
   controller do
     def index
-      render 'evaluation/index'
+      render 'evaluation/show'
     end
 
     def redirect_home_unless_return_to
