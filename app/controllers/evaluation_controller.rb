@@ -55,8 +55,9 @@ class EvaluationController < ApplicationController
   end
 
   def export
-    # export not implemented yet
-    redirect_to evaluation_index_path
+    term = params.require(:id)
+    evaluation_groups = Evaluation.no_missing_data.where(term: term).default_sorted_groups
+    send_data EvaluationReportExporter.new(evaluation_groups).generate, filename: "#{term}_evaluation_report_#{Time.now.strftime('%F')}"
   end
 
   def edit

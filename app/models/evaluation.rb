@@ -59,4 +59,23 @@ class Evaluation < ActiveRecord::Base
     CourseName.where(subject_course: subject_course).first.try(:name)
   end
 
+  def csv_data
+    [
+      term,
+      subject,
+      course,
+      section,
+      instructor.name,
+      enrollment,
+      item1_mean,
+      item2_mean,
+      item3_mean,
+      item4_mean,
+      item5_mean,
+      item6_mean,
+      item7_mean,
+      item8_mean
+    ].map(&:to_s)
+  end
+
 end
