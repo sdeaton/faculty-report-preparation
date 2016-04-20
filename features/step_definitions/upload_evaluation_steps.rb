@@ -14,11 +14,6 @@ When(/^User selects a non-excel file$/) do
   page.attach_file("data_file", Rails.root + 'spec/fixtures/ruby-capybara.zip')
 end
 
-Then(/^User should be on the evaluation page for term (.+)$/) do |term|
-  current_path.should == "/evaluation/" + term
-end
-
-
 Then(/^User should see ([0-9]+) new evaluations imported. ([0-9]+) evaluations updated.$/) do |numNew, numUpdate|
   expect(page).to have_content("#{numNew} new evaluations imported. #{numUpdate} evaluations updated.")
 end

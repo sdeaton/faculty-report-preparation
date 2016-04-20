@@ -135,6 +135,17 @@ RSpec.describe EvaluationController, type: :controller do
     end
   end
 
+  describe "GET #missing_data" do
+    it "shows the evaluation data for the courses with missing data" do
+      FactoryGirl.create(:evaluation, course: 210)
+      FactoryGirl.create(:evaluation, course: 110, enrollment: '')
+      FactoryGirl.create(:evaluation, course: 454, item1_mean: '')
+      get :missing_data
+      expect(response).to render_template("evaluation/missing_data")
+      expect(assigns(:evaluation_groups).count).to be(2)
+    end
+  end
+
 
   describe "PUT #update" do
     before :each do

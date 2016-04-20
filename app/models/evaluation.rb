@@ -18,6 +18,9 @@ class Evaluation < ActiveRecord::Base
   validates :item7_mean, numericality: { allow_blank: true }
   validates :item8_mean, numericality: { allow_blank: true }
 
+  scope :no_missing_data, -> {where.not("enrollment is NULL OR item1_mean is NULL OR item2_mean is NULL OR item3_mean is NULL OR item4_mean is NULL OR item5_mean is NULL OR item6_mean is NULL OR item7_mean is NULL OR item8_mean is NULL")}
+  scope :missing_data, -> {where("enrollment is NULL OR item1_mean is NULL OR item2_mean is NULL OR item3_mean is NULL OR item4_mean is NULL OR item5_mean is NULL OR item6_mean is NULL OR item7_mean is NULL OR item8_mean is NULL")}
+  
   def self.create_if_needed_and_update(key_attrs, other_attrs)
     evaluation = where(key_attrs).first_or_initialize
     is_new_record = evaluation.new_record?
@@ -34,7 +37,7 @@ class Evaluation < ActiveRecord::Base
     #  - Subject (CSCE, ENGR)
     #  - Course (110, 111, 121)
     #  - Instructor (Williams, Hurley)
-    #  - First character of section (200s, 500s are grouped together)s
+    #  - First character of section (200s, 500s are grouped together)
     all.group_by do |eval|
       eval.term.to_s + eval.subject.to_s + eval.course.to_s + eval.instructor.id.to_s + eval.section.to_s[0]
     end.sort { |group1, group2| group1.first <=> group2.first }.map(&:last)
@@ -55,4 +58,5 @@ class Evaluation < ActiveRecord::Base
   def course_name
     CourseName.where(subject_course: subject_course).first.try(:name)
   end
+
 end

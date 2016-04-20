@@ -27,7 +27,7 @@ class EvaluationController < ApplicationController
   end
 
   def index
-    latest_term = params[:term] || Evaluation.pluck(:term).uniq.sort.reverse.first
+    latest_term = params[:term] || Evaluation.no_missing_data.pluck(:term).uniq.sort.reverse.first
     if latest_term.nil?
       flash[:notice] = "No evaluation data exists yet! Try importing some."
       redirect_to root_path
@@ -37,9 +37,13 @@ class EvaluationController < ApplicationController
   end
 
   def show
-    term = params[:id] || Evaluation.pluck(:term).uniq.sort.reverse.first
-    @evaluation_groups = Evaluation.where(term: term).default_sorted_groups
+    term = params[:id] || Evaluation.no_missing_data.pluck(:term).uniq.sort.reverse.first
+    @evaluation_groups = Evaluation.no_missing_data.where(term: term).default_sorted_groups
     @terms = Evaluation.pluck(:term).uniq.sort.reverse
+  end
+
+  def missing_data
+    @evaluation_groups = Evaluation.missing_data.default_sorted_groups
   end
 
   def import
@@ -62,7 +66,7 @@ class EvaluationController < ApplicationController
 
   def update
     @evaluation = Evaluation.find(evaluation_id)
-    @evaluation.update(eval_params)
+    @evaluation.update(evaluation_params)
     if @evaluation.errors.empty?
       flash[:notice] = "Evaluation updated."
       redirect_to evaluation_index_path
@@ -74,17 +78,22 @@ class EvaluationController < ApplicationController
 
   # TODO: clean this up a little but. It should be easy to follow, but it's a little long.
   def upload
-    importer = ::PicaReportImporter.new(params.require(:data_file).tempfile)
-    creation_results = importer.evaluation_hashes.map do |eval_attrs|
-      key_attrs, other_attrs = split_attributes(eval_attrs)
-
-      Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
+    if params[:data_file] != nil
+      importer = ::PicaReportImporter.new(params.require(:data_file).tempfile)
+      creation_results = importer.evaluation_hashes.map do |eval_attrs|
+        key_attrs, other_attrs = split_attributes(eval_attrs)
+  
+        Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
+      end
+      num_new_records = creation_results.count { |result| result == true }
+      num_updated_records = creation_results.length - num_new_records
+  
+      flash[:notice] = "#{num_new_records} new evaluations imported. #{num_updated_records} evaluations updated."
+      redirect_to evaluation_index_path
+    else
+      flash[:errors] = "File not attached, please select file to upload"
+      redirect_to import_evaluation_index_path
     end
-    num_new_records = creation_results.count { |result| result == true }
-    num_updated_records = creation_results.length - num_new_records
-
-    flash[:notice] = "#{num_new_records} new evaluations imported. #{num_updated_records} evaluations updated."
-    redirect_to evaluation_index_path
   rescue ::PicaReportImporter::MalformedFileException => ex
     flash[:errors] = ex.to_s
     redirect_to import_evaluation_index_path
@@ -94,7 +103,7 @@ class EvaluationController < ApplicationController
   end
 
   def upload_gpr
-    if params[:term] && params[:term].match(/\A[12][0-9]{3}[A-Z]\z/)
+    if params[:term] && params[:term].match(/\A[12][0-9]{3}[A-Z]\z/) && params[:data_file] != nil
       importer = ::GradeDistributionReportImporter.new(params.require(:data_file).tempfile, params[:term])
       creation_results = importer.grades_hashes.map do |gpr_attrs|
         key_attrs, other_attrs = split_attributes(gpr_attrs)
@@ -107,8 +116,11 @@ class EvaluationController < ApplicationController
 
       flash[:notice] = "#{num_new_records} new GPRs imported. #{num_updated_records} evaluation GPRs updated."
       redirect_to evaluation_index_path
-    else
+    elsif params[:data_file] != nil
       flash[:errors] = "Term is either missing or in the incorrect format."
+      redirect_to import_gpr_evaluation_index_path
+    else 
+      flash[:errors] = "File not attached, please select file to upload"
       redirect_to import_gpr_evaluation_index_path
     end
   rescue PDF::Reader::MalformedPDFError => ex
@@ -137,10 +149,6 @@ class EvaluationController < ApplicationController
     params.require(:evaluation).permit(:term, :subject, :course, :section, :instructor_id,
       :enrollment, :item1_mean, :item2_mean, :item3_mean, :item4_mean, :item5_mean,
       :item6_mean, :item7_mean, :item8_mean, :instructor)
-  end
-
-  def eval_params
-    params.require(:evaluation).permit(:enrollment)
   end
 
   def evaluation_id

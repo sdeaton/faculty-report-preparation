@@ -7,6 +7,7 @@
         %p= link_to "Import GPR distribution data", import_gpr_evaluation_index_path, class: "btn btn-primary"
         %p= link_to "Add Paper Evaluation", new_evaluation_path, class: "btn btn-primary"
         %p= link_to "View Evaluation Data", evaluation_index_path, class: "btn btn-primary"
+        %p= link_to "View Missing Data", missing_data_evaluation_index_path, class: "btn btn-primary"
         %p= link_to "Faculty Member Historical Data", instructor_index_path, class: "btn btn-primary"
       - else
         %p= link_to "Sign In To Begin", new_user_session_path, class: "btn btn-primary"
