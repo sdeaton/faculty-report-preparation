@@ -27,7 +27,7 @@ class EvaluationController < ApplicationController
   end
 
   def index
-    latest_term = params[:term] || Evaluation.pluck(:term).uniq.sort.reverse.first
+    latest_term = params[:term] || Evaluation.no_missing_data.pluck(:term).uniq.sort.reverse.first
     if latest_term.nil?
       flash[:notice] = "No evaluation data exists yet! Try importing some."
       redirect_to root_path
@@ -37,9 +37,13 @@ class EvaluationController < ApplicationController
   end
 
   def show
-    term = params[:id] || Evaluation.pluck(:term).uniq.sort.reverse.first
-    @evaluation_groups = Evaluation.where(term: term).default_sorted_groups
+    term = params[:id] || Evaluation.no_missing_data.pluck(:term).uniq.sort.reverse.first
+    @evaluation_groups = Evaluation.no_missing_data.where(term: term).default_sorted_groups
     @terms = Evaluation.pluck(:term).uniq.sort.reverse
+  end
+
+  def missing_data
+    @evaluation_groups = Evaluation.missing_data.default_sorted_groups
   end
 
   def import
@@ -62,7 +66,7 @@ class EvaluationController < ApplicationController
 
   def update
     @evaluation = Evaluation.find(evaluation_id)
-    @evaluation.update(eval_params)
+    @evaluation.update(evaluation_params)
     if @evaluation.errors.empty?
       flash[:notice] = "Evaluation updated."
       redirect_to evaluation_index_path
@@ -137,10 +141,6 @@ class EvaluationController < ApplicationController
     params.require(:evaluation).permit(:term, :subject, :course, :section, :instructor_id,
       :enrollment, :item1_mean, :item2_mean, :item3_mean, :item4_mean, :item5_mean,
       :item6_mean, :item7_mean, :item8_mean, :instructor)
-  end
-
-  def eval_params
-    params.require(:evaluation).permit(:enrollment)
   end
 
   def evaluation_id

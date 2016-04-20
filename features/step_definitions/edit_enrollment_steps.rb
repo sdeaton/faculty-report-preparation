@@ -34,16 +34,16 @@ end
 When(/^User is on edit page for user (.+)$/) do |n|
 	visit '/evaluation/'+n+'/edit'
 end
-When(/^User clicks on Update Enrollment button on edit page$/) do
-  click_on("Update Enrollment Info")
+When(/^User clicks on (.+)? button on edit page$/) do |button|
+  click_on(button)
 end
 
 Then(/^User should see a link for (.+) for the record$/) do |name|
   expect(page).to have_link(name)
 end
 
-Then(/^User should be redirected to evaluation edit page$/) do
-	expect(page).to have_button("Update Enrollment Info")
+Then(/^User should be redirected to evaluation edit page with (.+) button$/) do |button|
+	expect(page).to have_button(button)
 end
 
 Then(/^User should be redirected to evaluation index page$/) do
