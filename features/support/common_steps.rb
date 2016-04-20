@@ -9,6 +9,20 @@ Given(/^User is authenticated$/)do
   click_button "Log in"
 end
 
+Given(/^User has uploaded PICA data$/) do
+  visit '/evaluation/import'
+  page.attach_file("data_file", Rails.root + 'spec/fixtures/StatisticsReport.xlsx')
+  click_on("Upload")
+  click_on("Home")
+end
+
+Given(/^User has uploaded matching PICA data$/) do
+  visit '/evaluation/import'
+  page.attach_file("data_file", Rails.root + 'spec/fixtures/StatisticsReport_actual_profs.xlsx')
+  click_on("Upload")
+  click_on("Home")
+end
+
 Given(/^User is on the home page/i) do
   visit '/'
 end
