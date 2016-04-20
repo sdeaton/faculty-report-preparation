@@ -4,7 +4,8 @@ class InstructorController < ApplicationController
 
   def index
     # return the instructors in sorted order by last name
-    @instructors = Instructor.all.sort { |a, b| a.name.split(" ").last <=> b.name.split(" ").last }
+    instructors_with_enrollment_data = Evaluation.no_missing_data.pluck(:instructor_id).uniq
+    @instructors =Instructor.where(id: instructors_with_enrollment_data).sort { |a, b| a.name.split(" ").last <=> b.name.split(" ").last }
   end
 
   def show
