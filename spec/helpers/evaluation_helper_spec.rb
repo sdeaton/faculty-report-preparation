@@ -49,4 +49,12 @@ RSpec.describe EvaluationHelper, type: :helper do
       expect(helper.compute_course_level_average(evaluation_groups.first, evaluation_groups)).to be_within(0.005).of(3.83)
     end
   end
+
+  describe "#compute_mean_gpr" do
+    it "computes a weighted average for the specified evaluation question" do
+      eval = FactoryGirl.create(:evaluation, gpr: 3.5)
+      eval2 = FactoryGirl.create(:evaluation, gpr: 4.0)
+      expect(helper.compute_mean_gpr([eval, eval2])).to be_within(0.0001).of(3.75)
+    end
+  end
 end
