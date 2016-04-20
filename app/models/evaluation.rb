@@ -19,8 +19,8 @@ class Evaluation < ActiveRecord::Base
   validates :item8_mean, numericality: { allow_blank: true }
 
   scope :no_missing_data, -> {where.not("enrollment is NULL OR item1_mean is NULL OR item2_mean is NULL OR item3_mean is NULL OR item4_mean is NULL OR item5_mean is NULL OR item6_mean is NULL OR item7_mean is NULL OR item8_mean is NULL")}
-  scope :missing_data, -> {where("enrollment is NULL OR item1_mean is NULL OR item2_mean is NULL OR item3_mean is NULL OR item4_mean is NULL OR item5_mean is NULL OR item6_mean is NULL OR item7_mean is NULL OR item8_mean is NULL")}
-  
+  scope :missing_data, -> {where("enrollment is NULL OR item1_mean is NULL OR item2_mean is NULL OR item3_mean is NULL OR item4_mean is NULL OR item5_mean is NULL OR item6_mean is NULL OR item7_mean is NULL OR item8_mean is NULL OR gpr is NULL")}
+
   def self.create_if_needed_and_update(key_attrs, other_attrs)
     evaluation = where(key_attrs).first_or_initialize
     is_new_record = evaluation.new_record?
@@ -47,8 +47,6 @@ class Evaluation < ActiveRecord::Base
     section.to_s.starts_with?("2")
   end
 
-<<<<<<< HEAD
-=======
   def subject_course
     "#{subject} #{course}"
   end
@@ -60,5 +58,24 @@ class Evaluation < ActiveRecord::Base
   def course_name
     CourseName.where(subject_course: subject_course).first.try(:name)
   end
->>>>>>> Add ability to specify a name for a course.
+
+  def csv_data
+    [
+      term,
+      subject,
+      course,
+      section,
+      instructor.name,
+      enrollment,
+      item1_mean,
+      item2_mean,
+      item3_mean,
+      item4_mean,
+      item5_mean,
+      item6_mean,
+      item7_mean,
+      item8_mean
+    ].map(&:to_s)
+  end
+
 end
