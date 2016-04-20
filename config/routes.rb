@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   resources :evaluation do
     get  'import',       on: :collection
     get  'import_gpr',   on: :collection
-    get  'export',       on: :collection
+    get  'export',       on: :member
     get  'missing_data', on: :collection
 
     post 'upload',       on: :collection
