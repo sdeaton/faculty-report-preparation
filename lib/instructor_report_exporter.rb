@@ -24,7 +24,6 @@ class InstructorReportExporter
       csv << HEADINGS
       @course_groups.each do |courses|
         course_data = []
-        6.times { course_data.push("") }
         course_data.push(course_name_for(courses.first))
         course_data.push(courses.first.term)
         course_data.push(compute_total_enrollment(courses))
@@ -32,7 +31,6 @@ class InstructorReportExporter
         course_data.push(compute_course_level_average(courses,@evaluation_groups).round(2))
         course_data.push(compute_mean_gpr(courses).try(:round,2))
         csv << course_data
-        csv << course_data.map { |_| "" }
       end
     end
   end
