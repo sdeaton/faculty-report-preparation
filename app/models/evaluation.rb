@@ -21,7 +21,18 @@ class Evaluation < ActiveRecord::Base
   scope :no_missing_data, -> {where.not("enrollment is NULL OR item1_mean is NULL OR item2_mean is NULL OR item3_mean is NULL OR item4_mean is NULL OR item5_mean is NULL OR item6_mean is NULL OR item7_mean is NULL OR item8_mean is NULL")}
   scope :missing_data, -> {where("enrollment is NULL OR item1_mean is NULL OR item2_mean is NULL OR item3_mean is NULL OR item4_mean is NULL OR item5_mean is NULL OR item6_mean is NULL OR item7_mean is NULL OR item8_mean is NULL OR gpr is NULL")}
 
+  KEY_ATTRIBUTES = [:term, :subject, :course, :section].freeze
+
+  def self.key_attributes
+    KEY_ATTRIBUTES
+  end
+
   def self.create_if_needed_and_update(key_attrs, other_attrs)
+    if other_attrs[:instructor].is_a?(String)
+      other_attrs[:instructor_id] = Instructor.where(name: other_attrs[:instructor]).first_or_create.id
+      other_attrs.delete(:instructor)
+    end
+
     evaluation = where(key_attrs).first_or_initialize
     is_new_record = evaluation.new_record?
     evaluation.save

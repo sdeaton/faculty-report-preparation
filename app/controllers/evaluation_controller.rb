@@ -77,19 +77,13 @@ class EvaluationController < ApplicationController
     end
   end
 
-  # TODO: clean this up a little but. It should be easy to follow, but it's a little long.
   def upload
     if params[:data_file] != nil
       importer = ::PicaReportImporter.new(params.require(:data_file).tempfile)
-      creation_results = importer.evaluation_hashes.map do |eval_attrs|
-        key_attrs, other_attrs = split_attributes(eval_attrs)
+      importer.import
+      results = importer.results
 
-        Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
-      end
-      num_new_records = creation_results.count { |result| result == true }
-      num_updated_records = creation_results.length - num_new_records
-
-      flash[:notice] = "#{num_new_records} new evaluations imported. #{num_updated_records} evaluations updated."
+      flash[:notice] = "#{results[:created]} new evaluations imported. #{results[:updated]} evaluations updated. #{results[:failed]} evaluations were not imported."
       redirect_to evaluation_index_path
     else
       flash[:errors] = "File not attached, please select file to upload"
@@ -132,10 +126,10 @@ class EvaluationController < ApplicationController
   private
   def split_attributes(all_attrs)
       # key attributes are ones for which we should have one unique record for a set of them
-      key_attributes = all_attrs.select { |k,v| [:term, :subject, :course, :section].include?(k.to_sym) }
+      key_attributes = all_attrs.select { |k,v| Evaluation.key_attributes.include?(k.to_sym) }
 
       # other atttributes are ones that should either be assigned or updated
-      other_attributes = all_attrs.select { |k,v| ![:term, :subject, :course, :section].include?(k.to_sym) }
+      other_attributes = all_attrs.reject { |k,v| Evaluation.key_attributes.include?(k.to_sym) }
       if other_attributes[:instructor] && !other_attributes[:instructor].instance_of?(Instructor) && !other_attributes[:instructor].empty?
         other_attributes[:instructor] = Instructor.where(name: other_attributes[:instructor]).first_or_create
       elsif other_attributes[:instructor_id] && other_attributes[:instructor_id] != "0"
