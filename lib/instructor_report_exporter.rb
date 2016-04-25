@@ -13,7 +13,7 @@ class InstructorReportExporter
     "Avg. Numerical Grade Earned by Students"
   ]
 
-  def initialize(instructor,evaluation_groups)
+  def initialize(instructor, evaluation_groups)
     @instructor = instructor
     @course_groups = instructor.course_section_groups
     @evaluation_groups = evaluation_groups
@@ -21,6 +21,8 @@ class InstructorReportExporter
 
   def generate
     CSV.generate do |csv|
+      csv << [ @instructor.name ]
+      csv << []
       csv << HEADINGS
       @course_groups.each do |courses|
         course_data = []

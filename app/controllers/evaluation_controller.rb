@@ -99,7 +99,7 @@ class EvaluationController < ApplicationController
     flash[:errors] = ex.to_s
     redirect_to import_evaluation_index_path
   rescue
-    flash[:errors] = "There was an error parsing that XLSX file. Maybe it is corrupt?"
+    flash[:errors] = "There was an error parsing that XLSX file. Maybe it is corrupt? Please note that only XLSX files are supported, not XLS."
     redirect_to import_evaluation_index_path
   end
 
