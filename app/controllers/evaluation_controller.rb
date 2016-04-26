@@ -62,12 +62,16 @@ class EvaluationController < ApplicationController
 
   def edit
     @evaluation = Evaluation.find(evaluation_id)
+    @instructors = Instructor.select_menu_options
     render layout: "layouts/centered_form"
   end
 
   def update
+    key_attrs, other_attrs = split_attributes(evaluation_params)
     @evaluation = Evaluation.find(evaluation_id)
-    @evaluation.update(evaluation_params)
+    @evaluation.assign_attributes(other_attrs)
+    @evaluation.save
+
     if @evaluation.errors.empty?
       flash[:notice] = "Evaluation updated."
       redirect_to evaluation_index_path
