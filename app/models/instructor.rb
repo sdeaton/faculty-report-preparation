@@ -8,7 +8,7 @@ class Instructor < ActiveRecord::Base
   end
 
   def self.select_menu_options
+    # pluck call must remain :name, :id to have the correct ordering for the select box helper
     order(:name).pluck(:name, :id).push([ "New instructor...", 0 ])
   end
-  
 end

@@ -4,7 +4,6 @@ class EvaluationController < ApplicationController
 
   def new
     @evaluation = Evaluation.new
-    # pluck call must remain :name, :id to have the correct ordering for the select box helper
     @instructors = Instructor.select_menu_options
     render layout: "layouts/centered_form"
   end
@@ -98,26 +97,24 @@ class EvaluationController < ApplicationController
   end
 
   def upload_gpr
-    if params[:term] && params[:term].match(/\A[12][0-9]{3}[A-Z]\z/) && params[:data_file] != nil
-      importer = ::GradeDistributionReportImporter.new(params.require(:data_file).tempfile, params[:term])
-      creation_results = importer.grades_hashes.map do |gpr_attrs|
-        key_attrs, other_attrs = split_attributes(gpr_attrs)
-
-        Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
-      end
-
-      num_new_records = creation_results.count { |result| result == true }
-      num_updated_records = creation_results.length - num_new_records
-
-      flash[:notice] = "#{num_new_records} new GPRs imported. #{num_updated_records} evaluation GPRs updated."
-      redirect_to evaluation_index_path
-    elsif params[:data_file] != nil
+    unless params[:term] && params[:term].match(/\A[12][0-9]{3}[A-Z]\z/)
       flash[:errors] = "Term is either missing or in the incorrect format."
       redirect_to import_gpr_evaluation_index_path
-    else
+      return
+    end
+
+    if params[:data_file].nil?
       flash[:errors] = "File not attached, please select file to upload"
       redirect_to import_gpr_evaluation_index_path
+      return
     end
+
+    importer = ::GradeDistributionReportImporter.new(params.require(:data_file).tempfile, params[:term])
+    importer.import
+    results = importer.results
+
+    flash[:notice] = "#{results[:created]} new GPRs imported. #{results[:updated]} evaluation GPRs updated. #{results[:failed]} evaluation GPRs were not imported."
+    redirect_to evaluation_index_path
   rescue PDF::Reader::MalformedPDFError => ex
     flash[:errors] = "There was an error parsing that PDF file. Maybe it is corrupt?"
     redirect_to import_gpr_evaluation_index_path

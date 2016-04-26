@@ -15,6 +15,19 @@ class GradeDistributionReportImporter
     @term = term
   end
 
+  def import
+    @results = EvaluationImportUtils.import(grades_hashes)
+  end
+
+  def results
+    num_new_records = @results.count { |result| result[:status] == true }
+    num_updated_records = @results.count { |result| result[:status] == false }
+    num_failed_records = @results.count { |result| result[:status] == :failure }
+
+    { created: num_new_records, updated: num_updated_records, failed: num_failed_records }
+  end
+
+  private
   def grades_hashes
     num_pages = reader.reader.page_count
     grades = []
@@ -35,7 +48,6 @@ class GradeDistributionReportImporter
     end
   end
 
-  private
   def extract_grades_from_page(page_num)
     text_columns =
         @reader.

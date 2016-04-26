@@ -25,25 +25,7 @@ class PicaReportImporter
   end
 
   def import
-    @results = evaluation_hashes.map do |eval_attrs|
-      key_attrs, other_attrs = split_attributes(eval_attrs)
-
-      case key_attrs[:subject]
-      when 'CSCE'
-        is_new = Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
-        { status: is_new }
-      when 'ENGR'
-        inst = Instructor.where(name: other_attrs[:instructor]).first
-        if inst
-          is_new = Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
-          { status: is_new }
-        else
-          { status: :failure }
-        end
-      else
-        { status: :failure }
-      end
-    end
+    @results = EvaluationImportUtils.import(evaluation_hashes)
   end
 
   def results
@@ -54,6 +36,7 @@ class PicaReportImporter
     { created: num_new_records, updated: num_updated_records, failed: num_failed_records }
   end
 
+  private
   def evaluation_hashes
     @evaluation_hashes ||= parse_sheet
   end
@@ -87,16 +70,5 @@ class PicaReportImporter
     end
 
     evaluations
-  end
-
-
-  def split_attributes(all_attrs)
-      # key attributes are ones for which we should have one unique record for a set of them
-      key_attributes = all_attrs.select { |k,v| Evaluation.key_attributes.include?(k.to_sym) }
-
-      # other atttributes are ones that should either be assigned or updated
-      other_attributes = all_attrs.reject { |k,v| Evaluation.key_attributes.include?(k.to_sym) }
-
-      [ key_attributes, other_attributes ]
   end
 end
