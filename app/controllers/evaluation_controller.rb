@@ -79,28 +79,35 @@ class EvaluationController < ApplicationController
 
   # TODO: clean this up a little but. It should be easy to follow, but it's a little long.
   def upload
-    if params[:data_file] != nil
-      importer = ::PicaReportImporter.new(params.require(:data_file).tempfile)
-      creation_results = importer.evaluation_hashes.map do |eval_attrs|
-        key_attrs, other_attrs = split_attributes(eval_attrs)
-
-        Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
+    if can? :write, :all
+      begin
+      if params[:data_file] != nil
+        importer = ::PicaReportImporter.new(params.require(:data_file).tempfile)
+        creation_results = importer.evaluation_hashes.map do |eval_attrs|
+          key_attrs, other_attrs = split_attributes(eval_attrs)
+  
+          Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
+        end
+        num_new_records = creation_results.count { |result| result == true }
+        num_updated_records = creation_results.length - num_new_records
+  
+        flash[:notice] = "#{num_new_records} new evaluations imported. #{num_updated_records} evaluations updated."
+        redirect_to evaluation_index_path
+      else
+        flash[:errors] = "File not attached, please select file to upload"
+        redirect_to import_evaluation_index_path
       end
-      num_new_records = creation_results.count { |result| result == true }
-      num_updated_records = creation_results.length - num_new_records
-
-      flash[:notice] = "#{num_new_records} new evaluations imported. #{num_updated_records} evaluations updated."
-      redirect_to evaluation_index_path
-    else
-      flash[:errors] = "File not attached, please select file to upload"
+    rescue ::PicaReportImporter::MalformedFileException => ex
+      flash[:errors] = ex.to_s
+      redirect_to import_evaluation_index_path
+    rescue
+      flash[:errors] = "There was an error parsing that XLSX file. Maybe it is corrupt? Please note that only XLSX files are supported, not XLS."
       redirect_to import_evaluation_index_path
     end
-  rescue ::PicaReportImporter::MalformedFileException => ex
-    flash[:errors] = ex.to_s
-    redirect_to import_evaluation_index_path
-  rescue
-    flash[:errors] = "There was an error parsing that XLSX file. Maybe it is corrupt? Please note that only XLSX files are supported, not XLS."
-    redirect_to import_evaluation_index_path
+    else
+      flash[:errors] = "You do not have sufficient rights to perform that action"
+      redirect_to import_evaluation_index_path
+    end
   end
 
   def upload_gpr
