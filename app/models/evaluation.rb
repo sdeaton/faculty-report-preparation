@@ -18,8 +18,8 @@ class Evaluation < ActiveRecord::Base
   validates :item7_mean, numericality: { allow_blank: true }
   validates :item8_mean, numericality: { allow_blank: true }
 
-  scope :no_missing_data, -> {where.not("enrollment is NULL OR item1_mean is NULL OR item2_mean is NULL OR item3_mean is NULL OR item4_mean is NULL OR item5_mean is NULL OR item6_mean is NULL OR item7_mean is NULL OR item8_mean is NULL")}
-  scope :missing_data, -> {where("enrollment is NULL OR item1_mean is NULL OR item2_mean is NULL OR item3_mean is NULL OR item4_mean is NULL OR item5_mean is NULL OR item6_mean is NULL OR item7_mean is NULL OR item8_mean is NULL OR gpr is NULL")}
+  scope :no_missing_data, -> {where.not("instructor_id is NULL OR enrollment is NULL OR item1_mean is NULL OR item2_mean is NULL OR item3_mean is NULL OR item4_mean is NULL OR item5_mean is NULL OR item6_mean is NULL OR item7_mean is NULL OR item8_mean is NULL")}
+  scope :missing_data, -> {where("instructor_id is NULL OR enrollment is NULL OR item1_mean is NULL OR item2_mean is NULL OR item3_mean is NULL OR item4_mean is NULL OR item5_mean is NULL OR item6_mean is NULL OR item7_mean is NULL OR item8_mean is NULL OR gpr is NULL")}
 
   KEY_ATTRIBUTES = [:term, :subject, :course, :section].freeze
 
@@ -39,7 +39,7 @@ class Evaluation < ActiveRecord::Base
 
     evaluation.update(other_attrs)
 
-    is_new_record
+    [ evaluation, is_new_record ]
   end
 
   def self.default_sorted_groups
@@ -50,8 +50,12 @@ class Evaluation < ActiveRecord::Base
     #  - Instructor (Williams, Hurley)
     #  - First character of section (200s, 500s are grouped together)
     all.group_by do |eval|
-      eval.term.to_s + eval.subject.to_s + eval.course.to_s + eval.instructor.id.to_s + eval.section.to_s[0]
+      eval.term.to_s + eval.subject.to_s + eval.course.to_s + eval.instructor.try(:id).to_s + eval.section.to_s[0]
     end.sort { |group1, group2| group1.first <=> group2.first }.map(&:last)
+  end
+
+  def key
+    attributes.select { |k, _| Evaluation.key_attributes.include? k.to_sym }
   end
 
   def is_honors_section?

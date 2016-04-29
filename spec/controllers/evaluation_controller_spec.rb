@@ -184,7 +184,7 @@ RSpec.describe EvaluationController, type: :controller do
       put :update, id: @eval1, :evaluation=>{:enrollment=>"44"}
       @eval1.reload
       expect(@eval1.enrollment).to eq (44)
-      expect(response).to redirect_to('/evaluation')
+      expect(response).to redirect_to("/evaluation/#{@eval1.term}")
     end
 
 
@@ -194,7 +194,7 @@ RSpec.describe EvaluationController, type: :controller do
       @eval2.reload
       expect(@eval1.enrollment).to eq (54)
       expect(@eval2.enrollment).to eq (22)
-      expect(response).to redirect_to('/evaluation')
+      expect(response).to redirect_to("/evaluation/#{@eval1.term}")
     end
 
     it "rejects and redirects back to edit for bad updates" do

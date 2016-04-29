@@ -66,10 +66,10 @@ class EvaluationController < ApplicationController
 
   def update
     @evaluation = Evaluation.find(evaluation_id)
-    @evaluation.update(evaluation_params)
+    @evaluation, _ = Evaluation.create_if_needed_and_update(@evaluation.key, evaluation_params)
     if @evaluation.errors.empty?
       flash[:notice] = "Evaluation updated."
-      redirect_to evaluation_index_path
+      redirect_to evaluation_path(id: @evaluation.term)
     else
       flash[:errors] = @evaluation.errors
       render 'edit'

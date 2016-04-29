@@ -11,12 +11,12 @@ class EvaluationImportUtils
     def import_if_csce_eval(key_attrs, other_attrs)
       case key_attrs[:subject]
       when 'CSCE'
-        is_new = Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
+        _, is_new = Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
         { status: is_new }
       when 'ENGR'
         inst = Instructor.where(name: other_attrs[:instructor]).first
         if inst
-          is_new = Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
+          _, is_new = Evaluation.create_if_needed_and_update(key_attrs, other_attrs)
           { status: is_new }
         else
           { status: :failure }
