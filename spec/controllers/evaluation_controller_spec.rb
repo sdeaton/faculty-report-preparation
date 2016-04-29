@@ -281,10 +281,17 @@ RSpec.describe EvaluationController, type: :controller do
       expect(response).to redirect_to("/evaluation")
     end
 
-    it "creates evaluation records for each GPR found" do
+    it "creates evaluation records for each GPR found for CSCE classes" do
       @file = fixture_file_upload('/grade_distribution.pdf', 'application/pdf')
       post :upload_gpr, data_file: @file, term: '2015C'
       expect(Evaluation.count).to eq(11)
+    end
+
+    it "creates evaluation records for ENGR classes with CSCE instructors" do
+      FactoryGirl.create(:instructor, name: 'BETTATI R')
+      @file = fixture_file_upload('/grade_dist_with_bettati.pdf', 'application/pdf')
+      post :upload_gpr, data_file: @file, term: '2015C'
+      expect(Evaluation.count).to eq(1)
     end
   end
 
