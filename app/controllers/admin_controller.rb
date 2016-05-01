@@ -1,26 +1,26 @@
 class AdminController < ApplicationController
-    
+
   before_action :authenticate_user!
   before_action :verify_admin
-  
+
   def verify_admin
-    unless current_user.has_role? :admin
+    unless can? :manage, :all
       redirect_to root_path
     end
   end
-  
+
   def index
     @users = User.all
     render layout: "layouts/application"
   end
-  
+
   def change_to_admin
     User.find(user_id).roles = []
     User.find(user_id).add_role :admin
     flash[:notice] = "#{current_user.email} has been changed to Admin"
     redirect_to admin_index_path
   end
-  
+
   def change_to_read_write
     if verify_min_admin
       User.find(user_id).roles = []
@@ -31,7 +31,7 @@ class AdminController < ApplicationController
     end
     redirect_to admin_index_path
   end
-  
+
   def change_to_read_only
     if verify_min_admin
       User.find(user_id).roles = []
@@ -42,7 +42,7 @@ class AdminController < ApplicationController
     end
     redirect_to admin_index_path
   end
-  
+
   def change_to_guest
     if verify_min_admin
       User.find(user_id).roles = []
@@ -53,7 +53,7 @@ class AdminController < ApplicationController
     end
     redirect_to admin_index_path
   end
-  
+
   def remove_user
     if verify_min_admin
       email = User.find(user_id).email
@@ -64,7 +64,7 @@ class AdminController < ApplicationController
     end
     redirect_to admin_index_path
   end
-  
+
   def user_id
     params.require(:admin_id)
   end
@@ -72,5 +72,4 @@ class AdminController < ApplicationController
   def verify_min_admin
     (!User.find(params.require(:admin_id)).has_role? :admin) || (User.with_role(:admin).length > 1)
   end
-  
 end
