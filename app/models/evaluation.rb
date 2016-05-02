@@ -29,7 +29,17 @@ class Evaluation < ActiveRecord::Base
 
   def self.create_if_needed_and_update(key_attrs, other_attrs)
     if other_attrs[:instructor].is_a?(String)
-      other_attrs[:instructor_id] = Instructor.where(name: Instructor.normalize_name(other_attrs[:instructor])).first_or_create.id
+      lst_name = other_attrs[:instructor].split.first
+      fst_name = other_attrs[:instructor].split.last
+      search_str1 = lst_name + "%" + " " + fst_name + "%"
+      search_str2 = fst_name + "%" + " " + lst_name + "%"
+      if Instructor.where('name like ?', search_str1).length != 0
+        other_attrs[:instructor_id] = Instructor.where('name like ?', search_str1).first.id
+      elsif Instructor.where('name like ?', search_str2).length != 0
+        other_attrs[:instructor_id] = Instructor.where('name like ?', search_str2).first.id
+      else
+        other_attrs[:instructor_id] = Instructor.where(name: Instructor.normalize_name(other_attrs[:instructor])).create.id
+      end
       other_attrs.delete(:instructor)
     end
 
